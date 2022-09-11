@@ -5,7 +5,7 @@ import cors from 'cors'
 
 import property from './routes/property.js'
 import agent from './routes/agent.js'
-import companies from './routes/companies.js'
+import owner from './routes/owner.js'
 dotenv.config()
 const app=express()
 
