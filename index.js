@@ -9,7 +9,7 @@ dotenv.config()
 const app=express()
 
 mongoose.connect(process.env.MONGO_URL)
-.then(()=>console.log('db connecdtion successful'))
+.then(()=>console.log('db connecdtionsss successful'))
 .catch((e)=>{console.log(e)})
 app.get('/',(req,res)=>{
     res.send("successful")
