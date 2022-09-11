@@ -5,7 +5,7 @@ import cors from 'cors'
 
 import property from './routes/property.js'
 import agent from './routes/agent.js'
-import owner from './routes/owner.js'
+// import owner from './routes/owner.js'
 dotenv.config()
 const app=express()
 
@@ -21,7 +21,7 @@ app.use(express.json({ limit: '30mb', extended: true }))
 app.use(express.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
-app.use('/api/owner',owner)
+// app.use('/api/owner',owner)
 app.use('/api/property',property)
 app.use('/api/agent',agent)
 
