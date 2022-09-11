@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose  from 'mongoose'
 import dotenv  from 'dotenv'
 import cors from 'cors'
+
 import property from './routes/property.js'
 import agent from './routes/agent.js'
 import owner from './routes/owner.js'
