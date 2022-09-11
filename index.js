@@ -2,7 +2,7 @@ import express from 'express'
 import mongoose  from 'mongoose'
 import dotenv  from 'dotenv'
 import cors from 'cors'
-// import property from './routes/property.js'
+import property from './routes/property.js'
 import agent from './routes/agent.js'
 
 dotenv.config()
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
 // app.use('/api/auth',auth)
-// app.use('/api/property',property)
+app.use('/api/property',property)
 app.use('/api/agent',agent)
 
 const PORT = process.env.PORT || 5000
