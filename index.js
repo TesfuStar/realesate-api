@@ -4,7 +4,7 @@ import dotenv  from 'dotenv'
 import cors from 'cors'
 import property from './routes/property.js'
 import agent from './routes/agent.js'
-import auth from './routes/auth.js'
+// import auth from './routes/auth.js'
 dotenv.config()
 const app=express()
 
