@@ -1,12 +1,42 @@
 import Agent from "../Models/Agent.js";
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import Joi from "@hapi/joi";
 //create Agent
 
 export const createAgent = async (req, res) => {
-  const newAgent = new Agent(req.body);
   try {
-    const savedAgent = await newAgent.save();
-    res.status(201).json(savedAgent);
+    const schema = Joi.object().keys({
+      companyId: Joi.string().required(),
+      firstName: Joi.string().optional(),
+      lastName: Joi.string().optional(),
+      phone:Joi.number().optional(),
+      email: Joi.string().email().lowercase().allow('').optional(),
+      password: Joi.string().min(5).required(),
+    });
+    const joeResult = await schema.validateAsync(req.body);
+    if (joeResult.error)
+    return res
+      .status(400)
+      .json({ message: joeResult.error.details[0].message });
+
+  let oldEmail = await Agent.findOne({ email: joeResult.email });
+
+  if (oldEmail)
+    return res.status(400).json({ message: "email already in use" });
+    let oldPhone = await Agent.findOne({ email: joeResult.phone });
+  if (oldPhone) return res.status(400).json({ message: "phone already in use" });
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(joeResult.password, salt);
+  const result = await Agent.create({
+    companyId:joeResult.companyId,
+    email: joeResult.email,
+    phone:joeResult.phone,
+    firstName: joeResult.firstName,
+    lastName: joeResult.lastName,
+    password: hashedPassword,
+  });
+   res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -58,7 +88,7 @@ export const getSingleAgent = async (req, res) => {
     }
   };
 
-    //update agent
+    //getCompanies agent
     export const getCompanyAgent= async (req, res) => {
       try {
         const companyAgent = await Agent.find({companyId:req.params.companyId})
@@ -67,3 +97,17 @@ export const getSingleAgent = async (req, res) => {
         res.status(500).json({ message: error.message });
       }
     };
+
+
+      //delete companies agent deleting compnies their agent
+
+  export const deleteCompanyAgent= async (req, res) => {
+    try {
+      const oldAgent = await Agent.findById(req.params.id)
+      if(!oldAgent) return  res.status(400).json({ message: "agent not found" });
+      await Agent.findByIdAndDelete(req.params.id)
+      res.status(200).json("Agent deleted successfully");
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };

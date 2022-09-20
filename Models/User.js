@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
+    companyId:{type: String,default:null},
     firstName: { type: String },
     lastName: { type: String },
     profile: {
@@ -12,6 +13,7 @@ const userSchema = mongoose.Schema(
     email: { type: String, unique: true },
     phone: { type: Number, unique: true },
     password: { type: String },
+    isAdmin:{type:Boolean,default:false}
   },
   { timestamps: true }
 );

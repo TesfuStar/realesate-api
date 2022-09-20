@@ -43,11 +43,11 @@ export const signIn = async (req, res) => {
 export const signUp = async (req, res) => {
   try {
     const schema = Joi.object().keys({
-      firstName: Joi.string().required(),
-      lastName: Joi.string().required(),
+      firstName: Joi.string().optional(),
+      lastName: Joi.string().optional(),
+      phone:Joi.number().optional(),
       email: Joi.string().email().lowercase().required(),
-      phone: Joi.number().required(),
-      password: Joi.string().required(),
+      password: Joi.string().min(6).required(),
     });
     const joeResult = await schema.validateAsync(req.body);
 
@@ -56,20 +56,21 @@ export const signUp = async (req, res) => {
         .status(400)
         .json({ message: joeResult.error.details[0].message });
 
-    let oldUser = await User.findOne({ phone: joeResult.phone });
+    let oldUser = await User.findOne({ email: joeResult.email });
 
     if (oldUser)
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "email already in use" });
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(joeResult.password, salt);
 
     const result = await User.create({
-      phone: joeResult.phone,
+      email: joeResult.email,
+      phone:joeResult.phone,
       password: hashedPassword,
-      name: joeResult.name,
+      firstName: joeResult.firstName,
+      lastName: joeResult.lastName,
     });
-
-    const token = jwt.sign({ phone: result.phone }, process.env.JWT_KEY, {
+    const token = jwt.sign({ email: result.email }, process.env.JWT_KEY, {
       expiresIn: "1h",
     });
 
@@ -78,6 +79,8 @@ export const signUp = async (req, res) => {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });
 
-    res.status(500).json({ message: "Something went wrong please try later!",error });
+    res
+      .status(500)
+      .json({ message: "Something went wrong please try later!", error });
   }
 };

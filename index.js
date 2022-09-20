@@ -8,6 +8,8 @@ import auth from './routes/auth.js'
 import owner from './routes/owner.js'
 import property from './routes/property.js'
 import agent from './routes/agent.js'
+import user from './routes/user.js'
+
 
 dotenv.config();
 const app = express();
@@ -19,7 +21,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
   
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect('mongodb://localhost/real')
 .then(()=>console.log('db connection successful'))
 .catch((e)=>{console.log(e)})
 app.get('/',(req,res)=>{
@@ -30,7 +32,7 @@ app.use('/api/auth',auth)
 app.use('/api/owner',owner)
 app.use('/api/property',property)
 app.use('/api/agent',agent)
-
+app.use('/api/user',user)
 
 const PORT = process.env.PORT || 5000
 
