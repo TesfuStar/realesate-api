@@ -13,7 +13,8 @@ const userSchema = mongoose.Schema(
     email: { type: String, unique: true },
     phone: { type: Number, unique: true },
     password: { type: String },
-    isAdmin:{type:Boolean,default:false}
+    isAdmin:{type:Boolean,default:false},
+    hasCompany:{type:Boolean,default:false}
   },
   { timestamps: true }
 );

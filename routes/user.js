@@ -3,12 +3,12 @@ import express from "express";
 const router = express.Router();
 
 import {
-  updateUser,createCompany
+  updateUser,createCompany,userProfile
 } from "../Controllers/User.js";
 
 
 router.put("/find/:id", updateUser);
 router.get("/company/:id", createCompany);
-// router.get("/find/:id", getSingleCompany);
+router.get("/profile/:companyId", userProfile);
 // router.delete("/find/:id", deleteSingleOwner);
 export default router;

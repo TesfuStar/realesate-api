@@ -4,7 +4,7 @@ const ownerSchema=new mongoose.Schema({
     companyId:{type:String, default:uuidv4()},
     name:{type:String,required:true,unique:true},
     logo:{type:String,required:true},
-    address:{type:String,required:true} ,//main office
+    address:{type:String,required:true},//main office
     phoneNo:{type:String,required:true}
 })
 

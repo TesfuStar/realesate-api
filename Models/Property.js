@@ -1,5 +1,5 @@
 import mongoose  from 'mongoose'
-
+import paginate from 'mongoose-paginate-v2';
 
 const AddressSchema = new mongoose.Schema({
       city:{type:String,required:true},
@@ -10,6 +10,7 @@ const AddressSchema = new mongoose.Schema({
 })
 
 const PropertySchema = new mongoose.Schema({
+    companyId:{ type: String, required: true },
     name:{type:String,required:true},
     images:{type:[String],required:true,},
     price:{type:Number,required:true},
@@ -31,7 +32,7 @@ const PropertySchema = new mongoose.Schema({
 
 },{timestamps:true})
 
-
+PropertySchema.plugin(paginate)
 const Property = mongoose.model('Property',PropertySchema)
 
 

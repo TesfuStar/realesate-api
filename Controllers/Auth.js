@@ -28,9 +28,17 @@ export const signIn = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ phone: oldUser.phone }, process.env.JWT_KEY, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      {
+        phone: oldUser.phone,
+        isAdmin: oldUser.isAdmin,
+        companyId: oldUser.companyId,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "1d",
+      }
+    );
 
     res.status(200).json({ result: oldUser, token });
   } catch (error) {
@@ -45,9 +53,10 @@ export const signUp = async (req, res) => {
     const schema = Joi.object().keys({
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
-      phone:Joi.number().optional(),
+      phone: Joi.number().optional(),
       email: Joi.string().email().lowercase().required(),
       password: Joi.string().min(6).required(),
+      
     });
     const joeResult = await schema.validateAsync(req.body);
 
@@ -65,7 +74,7 @@ export const signUp = async (req, res) => {
 
     const result = await User.create({
       email: joeResult.email,
-      phone:joeResult.phone,
+      phone: joeResult.phone,
       password: hashedPassword,
       firstName: joeResult.firstName,
       lastName: joeResult.lastName,
