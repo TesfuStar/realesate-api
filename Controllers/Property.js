@@ -17,123 +17,130 @@ export const createProperty = async (req, res) => {
 export const getAllProperty = async (req, res) => {
   const options = {
     page: req.query.page,
+    populate: 'agents',
     limit: 2,
     collation: {
-      locale: 'en',
+      locale: "en",
     },
   };
   try {
-    const allProperties= await Property.paginate({}, options, function (err, result) {
-      // result.docs
-      // result.totalDocs = 100
-      // result.limit = 10
-      // result.page = 1
-      // result.totalPages = 10
-      // result.hasNextPage = true
-      // result.nextPage = 2
-      // result.hasPrevPage = false
-      // result.prevPage = null
-      // result.pagingCounter = 1
-      console.log(result)
-      res.status(200).json(result);
-    });
+    const allProperties = await Property.paginate(
+      {},
+      options,
+      function (err, result) {
+        // result.docs
+        // result.totalDocs = 100
+        // result.limit = 10
+        // result.page = 1
+        // result.totalPages = 10
+        // result.hasNextPage = true
+        // result.nextPage = 2
+        // result.hasPrevPage = false
+        // result.prevPage = null
+        // result.pagingCounter = 1
+        console.log(result);
+        res.status(200).json(result);
+      }
+    );
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
 // get single property
 export const getSingleProperty = async (req, res) => {
-    try {
-      const property = await Property.findById(req.params.id).populate("agents")
-      res.status(200).json(property);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
-
-
-  //delete property
-
-  export const deleteProperty= async (req, res) => {
-    try {
-      await Property.findByIdAndDelete(req.params.id)
-      res.status(200).json("owner deleted succssfully");
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
-
-  //update property
-  export const updateProperty= async (req, res) => {
-    try {
-      const property = await Property.findByIdAndUpdate(req.params.id,{
-        $set:req.body
-    },{new:true})
-      res.status(200).json(property);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
-
-
-  //filtered properties
-  
-export const getPropertiesByFilter=async(req,res)=>{
-  const {minprice,maxprice,bathroom,bedroom,minarea,maxarea,type,city,owner}=req.query
-   try {
-     const property =await Property.find(
-       {
-        price:{$gte:minprice | 100,$lte:maxprice || 20000000},
-       "details.bedroom":{$gte:bedroom | 1},
-       "details.bathroom":{$gte:bathroom | 1},
-       "details.area":{$gte:minarea | 100, $lte:maxarea || 10000},
-        type:type ? {$in:[type]} : {$in:['sale','rent']},
-        owner:owner ? {$eq:owner} : {$exists:true},
-        "address.city":city ? {$in:[city]} : {$exists:true},
-       
-     },
-   
-       
-       )
-     res.status(200).json(property)
-     
-   } catch (error) {
-     res.status(500).json({message:error.message})
-   }
- 
- }
-
-
-
- //get property sell or rent
- export const  getByPropertyType =async(req,res)=>{
-  const qPropertyType=req.query.type
-  let properties;
-    const queryText = new RegExp(qPropertyType,'i')
   try {
-    properties = await Property.find({ type:{
-      $in:[queryText]
-  }
-    }).populate("agents");
-    res.status(200).json(properties)
+    const property = await Property.findById(req.params.id).populate("agents");
+    res.status(200).json(property);
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
+
+//delete property
+
+export const deleteProperty = async (req, res) => {
+  try {
+    await Property.findByIdAndDelete(req.params.id);
+    res.status(200).json("owner deleted succssfully");
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//update property
+export const updateProperty = async (req, res) => {
+  try {
+    const property = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(property);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//filtered properties
+
+export const getPropertiesByFilter = async (req, res) => {
+  const {
+    minprice,
+    maxprice,
+    bathroom,
+    bedroom,
+    minarea,
+    maxarea,
+    type,
+    city,
+    owner,
+  } = req.query;
+  try {
+    const property = await Property.find({
+      price: { $gte: minprice | 100, $lte: maxprice || 20000000 },
+      "details.bedroom": { $gte: bedroom | 1 },
+      "details.bathroom": { $gte: bathroom | 1 },
+      "details.area": { $gte: minarea | 100, $lte: maxarea || 10000 },
+      type: type ? { $in: [type] } : { $in: ["sale", "rent"] },
+      owner: owner ? { $eq: owner } : { $exists: true },
+      "address.city": city ? { $in: [city] } : { $exists: true },
+    });
+    res.status(200).json(property);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get property sell or rent
+export const getByPropertyType = async (req, res) => {
+  const qPropertyType = req.query.type;
+  let properties;
+  const queryText = new RegExp(qPropertyType, "i");
+  try {
+    properties = await Property.find({
+      type: {
+        $in: [queryText],
+      },
+    }).populate("agents");
+    res.status(200).json(properties);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 //get all properties or by realstate owner
 
-export const getPropertyByOwner=async(req,res)=>{
+export const getPropertyByOwner = async (req, res) => {
   try {
-      const properties = await Property.find({owner:req.params.id})
-      res.status(200).json(properties)
-    
+    const properties = await Property.find({ owner: req.params.id });
+    res.status(200).json(properties);
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 // export const getAllProperty = async (req, res) => {
 //   try {
