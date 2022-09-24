@@ -15,11 +15,28 @@ export const createProperty = async (req, res) => {
 //get all property
 
 export const getAllProperty = async (req, res) => {
+  const options = {
+    page: req.query.page,
+    limit: 2,
+    collation: {
+      locale: 'en',
+    },
+  };
   try {
-    const allProperties= await Property.paginate();
-    
-      // results.data = await Property.find().populate("agents").limit(limit).skip(startIndex).exec();
-    res.status(200).json(allProperties);
+    const allProperties= await Property.paginate({}, options, function (err, result) {
+      // result.docs
+      // result.totalDocs = 100
+      // result.limit = 10
+      // result.page = 1
+      // result.totalPages = 10
+      // result.hasNextPage = true
+      // result.nextPage = 2
+      // result.hasPrevPage = false
+      // result.prevPage = null
+      // result.pagingCounter = 1
+      console.log(result)
+      res.status(200).json(result);
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

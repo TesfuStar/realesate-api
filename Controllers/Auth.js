@@ -65,10 +65,13 @@ export const signUp = async (req, res) => {
         .status(400)
         .json({ message: joeResult.error.details[0].message });
 
-    let oldUser = await User.findOne({ email: joeResult.email });
+    let oldEmail = await User.findOne({ email: joeResult.email });
 
-    if (oldUser)
+    if (oldEmail)
       return res.status(400).json({ message: "email already in use" });
+      let oldPhone = await User.findOne({ phone: joeResult.phone });
+      if (oldPhone)
+      return res.status(400).json({ message: "phone already in use" });
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(joeResult.password, salt);
 

@@ -1,6 +1,7 @@
 import User from "../Models/User.js";
 import { v4 as uuidv4 } from "uuid";
 import Owner from "../Models/Owner.js";
+import Property from "../Models/Property.js";
 // update user
 
 export const updateUser = async (req, res) => {
@@ -53,3 +54,21 @@ export const userProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//add to Favorites
+
+export const addToFavorites=async(req,res)=>{
+   try {
+    const oldUser = await User.findById(req.params.id)
+    if(!oldUser) return res.status(400).json("user not found")
+    const userFavorites = await User.findByIdAndUpdate(
+      req.params.id,
+      { favorites: req.body },
+      { new: true }
+    );
+    res.status(200).json({success:true,data:{user:userFavorites,company},message:"successfully added to favorites"});
+
+   } catch (error) {
+    res.status(500).json({ message: error.message });
+   }
+}

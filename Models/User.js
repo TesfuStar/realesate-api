@@ -11,9 +11,10 @@ const userSchema = mongoose.Schema(
         "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
     },
     email: { type: String, unique: true },
-    phone: { type: Number, unique: true },
+    phone: { type: Number},
     password: { type: String },
     isAdmin:{type:Boolean,default:false},
+    favorites:{type:[mongoose.SchemaTypes.ObjectId],ref:'Property'},
     hasCompany:{type:Boolean,default:false}
   },
   { timestamps: true }
