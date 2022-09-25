@@ -27,8 +27,8 @@ const PropertySchema = new mongoose.Schema({
     views:{type:Number,default:0},
     owner:{type:mongoose.SchemaTypes.ObjectId,required:true,ref:'Owner'},//realstate owner companyId
     agents:[{type:mongoose.SchemaTypes.ObjectId,ref:'Agent'}],
-    address:AddressSchema
-    
+    address:AddressSchema,
+    isFeatured:{type:Boolean,default:false}
 
 },{timestamps:true})
 

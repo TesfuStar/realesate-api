@@ -10,7 +10,9 @@ import {
   updateProperty,
   getPropertiesByFilter,
   getByPropertyType,
-  getPropertyByOwner
+  getPropertyByOwner,
+  getCompaniesProperty,
+  getFeaturedProperty
 } from "../Controllers/Property.js";
 
 router.post("/create", createProperty);
@@ -21,4 +23,6 @@ router.delete("/find/:id", deleteProperty);
 router.put("/find/:id", updateProperty);
 router.get('/type',getByPropertyType)
 router.get('/owner/:id',getPropertyByOwner)
+router.get('/company/:companyId',getCompaniesProperty)
+router.get("/featured", getFeaturedProperty);
 export default router;

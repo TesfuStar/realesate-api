@@ -18,6 +18,7 @@ export const getAllProperty = async (req, res) => {
   const options = {
     page: req.query.page,
     populate: 'agents',
+    sort:{createdAt:-1},
     limit: 2,
     collation: {
       locale: "en",
@@ -38,7 +39,6 @@ export const getAllProperty = async (req, res) => {
         // result.hasPrevPage = false
         // result.prevPage = null
         // result.pagingCounter = 1
-        console.log(result);
         res.status(200).json(result);
       }
     );
@@ -50,8 +50,10 @@ export const getAllProperty = async (req, res) => {
 // get single property
 export const getSingleProperty = async (req, res) => {
   try {
-    const property = await Property.findById(req.params.id).populate("agents");
-    res.status(200).json(property);
+    const singleProperty = await Property.findById(req.params.id).populate("agents");
+    singleProperty.views++;
+    const savedProperty = await singleProperty.save()
+     res.status(200).json({success:true,data:savedProperty})
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -142,29 +144,22 @@ export const getPropertyByOwner = async (req, res) => {
   }
 };
 
-// export const getAllProperty = async (req, res) => {
-//   try {
-//     const allProperties= await Property.find();
-//       const page = parseInt(req.query.page)
-//       const limit = 4
-//       const startIndex = (page - 1) * limit
-//       const endIndex = page * limit;
-//       const results={}
-//       if(endIndex < allProperties.length){
-//         results.next = {
-//           page:page + 1,
-//           limit:limit
-//         }
-//       }
-//       if(startIndex > 0){
-//         results.previous = {
-//           page:page - 1,
-//           limit:limit
-//         }
-//       }
-//       results.data = await Property.find().populate("agents").limit(limit).skip(startIndex).exec();
-//     res.status(200).json(results);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+export const getCompaniesProperty=async(req,res)=>{
+  try {
+    const companyProperty = await Property.find({companyId:req.params.companyId})
+    res.status(200).json({success:true,message:'success',data:companyProperty});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+
+export const getFeaturedProperty = async (req, res) => {
+  try {
+    const properties = await Property.find({ isFeatured:true }).populate('agents');
+    res.status(200).json({success:true,data:properties});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
