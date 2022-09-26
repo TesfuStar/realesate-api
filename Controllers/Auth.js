@@ -2,6 +2,7 @@ import User from "../Models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Joi from "@hapi/joi";
+import _ from 'lodash'
 export const signIn = async (req, res) => {
   try {
     const schema = Joi.object().keys({
@@ -39,8 +40,9 @@ export const signIn = async (req, res) => {
         expiresIn: "1d",
       }
     );
+    const selectedProp = _.pick(oldUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
 
-    res.status(200).json({ result: oldUser, token });
+    res.status(200).json({ result:selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });
@@ -85,8 +87,8 @@ export const signUp = async (req, res) => {
     const token = jwt.sign({ email: result.email }, process.env.JWT_KEY, {
       expiresIn: "1h",
     });
-
-    res.status(201).json({ result, token });
+    const selectedProp = _.pick(result,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    res.status(201).json({ selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });

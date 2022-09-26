@@ -64,7 +64,7 @@ export const getSingleProperty = async (req, res) => {
 export const deleteProperty = async (req, res) => {
   try {
     await Property.findByIdAndDelete(req.params.id);
-    res.status(200).json("owner deleted succssfully");
+    res.status(200).json("property deleted succssfully");
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -144,9 +144,10 @@ export const getPropertyByOwner = async (req, res) => {
   }
 };
 
+//get company property
 export const getCompaniesProperty=async(req,res)=>{
   try {
-    const companyProperty = await Property.find({companyId:req.params.companyId})
+    const companyProperty = await Property.find({companyId:req.params.companyId}).sort({createdAt:-1})
     res.status(200).json({success:true,message:'success',data:companyProperty});
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -154,10 +155,20 @@ export const getCompaniesProperty=async(req,res)=>{
 }
 
 
-
+//get featured property
 export const getFeaturedProperty = async (req, res) => {
   try {
     const properties = await Property.find({ isFeatured:true }).populate('agents');
+    res.status(200).json({success:true,data:properties});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get property by mostly viewed
+export const getMostlyViewedProperty = async (req, res) => {
+  try {
+    const properties = await Property.find().populate('agents').sort({views:-1})
     res.status(200).json({success:true,data:properties});
   } catch (error) {
     res.status(500).json({ message: error.message });

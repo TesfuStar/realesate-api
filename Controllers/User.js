@@ -2,6 +2,7 @@ import User from "../Models/User.js";
 import { v4 as uuidv4 } from "uuid";
 import Owner from "../Models/Owner.js";
 import Property from "../Models/Property.js";
+import _ from 'lodash'
 // update user
 
 export const updateUser = async (req, res) => {
@@ -10,6 +11,8 @@ export const updateUser = async (req, res) => {
   //   }
 
   try {
+    const oldUser = await User.findById(req.params.id)
+    if(!oldUser) return res.status(400).json({message:"user not found"})
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -17,7 +20,8 @@ export const updateUser = async (req, res) => {
       },
       { new: true }
     );
-    res.status(201).json(updatedUser);
+    const selectedProp = _.pick(updatedUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    res.status(201).json(selectedProp);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -46,8 +50,8 @@ export const createCompany = async (req, res) => {
 
 export const userProfile = async (req, res) => {
   try {
-    const user = await User.find({companyId:req.params.companyId})
-    const owner = await Owner.find({companyId:req.params.companyId})
+    const user = await User.findOne({companyId:req.params.companyId})
+    const owner = await Owner.findOne({companyId:req.params.companyId})
 
     res.status(200).json({success:true,data:{user:user,company:owner}});
   } catch (error) {

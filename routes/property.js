@@ -12,7 +12,8 @@ import {
   getByPropertyType,
   getPropertyByOwner,
   getCompaniesProperty,
-  getFeaturedProperty
+  getFeaturedProperty,
+  getMostlyViewedProperty
 } from "../Controllers/Property.js";
 
 router.post("/create", createProperty);
@@ -25,4 +26,5 @@ router.get('/type',getByPropertyType)
 router.get('/owner/:id',getPropertyByOwner)
 router.get('/company/:companyId',getCompaniesProperty)
 router.get("/featured", getFeaturedProperty);
+router.get("/mostly-viewed", getMostlyViewedProperty);
 export default router;
