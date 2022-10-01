@@ -174,3 +174,15 @@ export const getMostlyViewedProperty = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//get companies featured properties
+export const getCompaniesFeaturedProperty=async(req,res)=>{
+  try {
+    const companyProperty = await Property.find({companyId:req.params.companyId,isFeatured:true})
+    res.status(200).json({success:true,message:'success',data:companyProperty});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+

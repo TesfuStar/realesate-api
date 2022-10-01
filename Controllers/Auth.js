@@ -88,7 +88,7 @@ export const signUp = async (req, res) => {
       expiresIn: "1h",
     });
     const selectedProp = _.pick(result,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
-    res.status(201).json({ selectedProp, token });
+    res.status(201).json({ result:selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });

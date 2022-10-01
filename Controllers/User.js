@@ -46,7 +46,7 @@ export const createCompany = async (req, res) => {
 };
 
 
-// profile
+// profile for relators
 
 export const userProfile = async (req, res) => {
   try {
@@ -76,3 +76,16 @@ export const addToFavorites=async(req,res)=>{
     res.status(500).json({ message: error.message });
    }
 }
+
+
+//profile for app
+
+export const userAppProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+
+    res.status(200).json({success:true,data:{user:user}});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

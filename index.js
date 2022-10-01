@@ -10,6 +10,9 @@ import property from './routes/property.js'
 import agent from './routes/agent.js'
 import user from './routes/user.js'
 import dashboard from './routes/dashboard.js'
+import admin from './routes/admin.js'
+import propertyAd from './routes/propertyAd.js'
+import companyRequest from './routes//companyRequest.js'
 
 dotenv.config();
 const app = express();
@@ -34,6 +37,9 @@ app.use('/api/property',property)
 app.use('/api/agent',agent)
 app.use('/api/user',user)
 app.use('/api/dashboard',dashboard)
+app.use('/api/admin',admin)
+app.use('/api/ads',propertyAd)
+app.use('/api/company',companyRequest)
 
 const PORT = process.env.PORT || 5000
 
