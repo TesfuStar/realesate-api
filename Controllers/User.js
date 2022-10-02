@@ -1,17 +1,19 @@
 import User from "../Models/User.js";
-import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcryptjs";
 import Owner from "../Models/Owner.js";
 import Property from "../Models/Property.js";
 import _ from 'lodash'
 // update user
 
 export const updateUser = async (req, res) => {
-  // if (req.body.password) {
-  //     req.body.password = bcrypt.hash(password, 12);
-  //   }
-
+ 
   try {
     const oldUser = await User.findById(req.params.id)
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(req.body.password, salt)
+      req.body.password = hashed
+    }
     if(!oldUser) return res.status(400).json({message:"user not found"})
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
@@ -83,8 +85,9 @@ export const addToFavorites=async(req,res)=>{
 export const userAppProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
+    const selectedProp = _.pick(user,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
 
-    res.status(200).json({success:true,data:{user:user}});
+    res.status(200).json({success:true,profile:selectedProp});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
