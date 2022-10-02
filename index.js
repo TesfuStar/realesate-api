@@ -12,8 +12,8 @@ import user from './routes/user.js'
 import dashboard from './routes/dashboard.js'
 import admin from './routes/admin.js'
 import propertyAd from './routes/propertyAd.js'
-import companyRequest from './routes//companyRequest.js'
-
+import companyRequest from './routes/companyRequest.js'
+import soldProperties from './routes/soldProperties.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -40,7 +40,7 @@ app.use('/api/dashboard',dashboard)
 app.use('/api/admin',admin)
 app.use('/api/ads',propertyAd)
 app.use('/api/company',companyRequest)
-
+app.use('/api/sold',soldProperties)
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT,()=>{console.log("server is running")})

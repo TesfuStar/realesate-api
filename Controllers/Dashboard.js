@@ -1,18 +1,20 @@
 import Agent from "../Models/Agent.js";
 import Property from "../Models/Property.js";
-
+import SoldProperties from "../Models/SoldProperties.js";
 
 export const dashboard = async (req, res) => {
   try {
     const agents = await Agent.find({companyId:req.params.companyId}).count();
     const propertyForSale = await Property.find({companyId:req.params.companyId,type:'sale'}).count();
     const propertyForRent = await Property.find({companyId:req.params.companyId,type:'rent'}).count();
+    const soldProperties = await SoldProperties.find({companyId:req.params.companyId}).count();
     res.status(200).json({
       success: true,
       data: {
          totalAgent: agents,
          propertyForSale:propertyForSale,
-         propertyForRent:propertyForRent
+         propertyForRent:propertyForRent,
+         soldProperties:soldProperties
          },
     });
   } catch (error) {

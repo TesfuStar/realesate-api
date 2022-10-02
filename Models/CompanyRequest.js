@@ -9,6 +9,7 @@ const companyRequestSchema = new mongoose.Schema(
     phoneNo: { type: String, required: true },
     comment: { type: String },
     isApproved: { type: Boolean, default: false },
+    isRejected:{type:Boolean,default:false},
   },
   { timestamps: true }
 );

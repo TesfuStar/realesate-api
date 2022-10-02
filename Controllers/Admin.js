@@ -94,6 +94,7 @@ export const getAllProperties = async (req, res) => {
 
 export const getCompanyDetail = async (req, res) => {
   try {
+    const owner = await Owner.findOne({companyId: req.params.id})
     const rentalProperties = await Property.find({
       companyId: req.params.id,
       type: "rent",
@@ -107,7 +108,9 @@ export const getCompanyDetail = async (req, res) => {
     const allAgents = await Agent.find({companyId: req.params.id,}).sort({createdAt:-1})
     res.status(200).json({
       success: true,
-      data: { rentProperties: rentalProperties, 
+      data: { 
+        owner:owner,
+        rentProperties: rentalProperties, 
         sellProperties: sellProperties,
          agents: agents,
          properties:allProperties,

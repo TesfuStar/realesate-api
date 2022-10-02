@@ -14,7 +14,7 @@ const PropertySchema = new mongoose.Schema({
     name:{type:String,required:true},
     images:{type:[String],required:true,},
     price:{type:Number,required:true},
-    description:{type:String,required:true},//text descriptionfor the property 
+    description:{type:String,required:true},//text description for the property 
     type:{type:String,required:true}, //rent or sale
     details:{
         area:{type:Number,required:true},//in square
@@ -25,11 +25,13 @@ const PropertySchema = new mongoose.Schema({
     
     },
     views:{type:Number,default:0},
-    owner:{type:mongoose.SchemaTypes.ObjectId,required:true,ref:'Owner'},//realstate owner companyId
+    owner:{type:mongoose.SchemaTypes.ObjectId,required:true,ref:'Owner'},//realestate owner companyId
     agents:[{type:mongoose.SchemaTypes.ObjectId,ref:'Agent'}],
     address:AddressSchema,
-    isFeatured:{type:Boolean,default:false}
-
+    amenities:{type:[String],default:[]},
+    isFeatured:{type:Boolean,default:false},
+    isRented:{type:Boolean,default:false},
+    isSoldOut:{type:Boolean,default:false},
 },{timestamps:true})
 
 PropertySchema.plugin(paginate)

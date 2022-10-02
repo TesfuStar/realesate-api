@@ -54,7 +54,9 @@ export const getAllAgents = async (req, res) => {
 export const getSingleAgent = async (req, res) => {
     try {
       const agent = await Agent.findById(req.params.id)
-      res.status(200).json(agent);
+      if(!agent) return res.status(404).json({ message: "agent not found" });
+
+      res.status(200).json({message:true,data:agent});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

@@ -19,26 +19,20 @@ export const getAllProperty = async (req, res) => {
     page: req.query.page,
     populate: 'agents',
     sort:{createdAt:-1},
+
     limit: 2,
     collation: {
       locale: "en",
     },
   };
+  
+
   try {
     const allProperties = await Property.paginate(
-      {},
+      {isRented:false,isSoldOut:false},
       options,
       function (err, result) {
-        // result.docs
-        // result.totalDocs = 100
-        // result.limit = 10
-        // result.page = 1
-        // result.totalPages = 10
-        // result.hasNextPage = true
-        // result.nextPage = 2
-        // result.hasPrevPage = false
-        // result.prevPage = null
-        // result.pagingCounter = 1
+  
         res.status(200).json(result);
       }
     );
@@ -51,6 +45,7 @@ export const getAllProperty = async (req, res) => {
 export const getSingleProperty = async (req, res) => {
   try {
     const singleProperty = await Property.findById(req.params.id).populate("agents");
+    if(!singleProperty) return res.status(404).json({ message: "property  not found" });
     singleProperty.views++;
     const savedProperty = await singleProperty.save()
      res.status(200).json({success:true,data:savedProperty})
@@ -80,7 +75,7 @@ export const updateProperty = async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).json(property);
+    res.status(200).json({success:true,data:property});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -186,3 +181,12 @@ export const getCompaniesFeaturedProperty=async(req,res)=>{
   }
 }
 
+//get companies featured properties
+export const getCompaniesUnadvertisedProperty=async(req,res)=>{
+  try {
+    const companyProperty = await Property.find({companyId:req.params.companyId,isFeatured:false})
+    res.status(200).json({success:true,message:'success',data:companyProperty});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

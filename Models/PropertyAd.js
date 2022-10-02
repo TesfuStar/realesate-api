@@ -29,7 +29,8 @@ const PropertyAdSchema = new mongoose.Schema({
     agents:[{type:mongoose.SchemaTypes.ObjectId,ref:'Agent'}],
     address:AddressSchema,
     isFeatured:{type:Boolean,default:false},
-    isAccepted:{type:Boolean,default:false}
+    isAccepted:{type:Boolean,default:false},
+    isRejected:{type:Boolean,default:false},
 
 },{timestamps:true})
 

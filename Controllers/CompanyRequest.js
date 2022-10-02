@@ -85,8 +85,8 @@ export const acceptCompanyRequest = async (req, res) => {
         { companyId: saverOwner.companyId,hasCompany:true },
         { new: true }
       );
-      console.log(saverOwner.companyId)
-    res.status(200).json({message:true,owner:saverOwner,request:updatedCompanyRequest,user:userCompany});
+
+    res.status(200).json({message:"success",owner:saverOwner,request:updatedCompanyRequest,user:userCompany});
 
   } catch (error) {
     res.status(500).json({ message: error.message });
