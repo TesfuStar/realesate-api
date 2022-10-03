@@ -18,7 +18,7 @@ export const getAllProperty = async (req, res) => {
   const options = {
     page: req.query.page,
     populate: 'agents',
-    sort:{createdAt:-1},
+    sort:{updatedAt:-1},
 
     limit: 2,
     collation: {
@@ -142,7 +142,7 @@ export const getPropertyByOwner = async (req, res) => {
 //get company property
 export const getCompaniesProperty=async(req,res)=>{
   try {
-    const companyProperty = await Property.find({companyId:req.params.companyId}).sort({createdAt:-1})
+    const companyProperty = await Property.find({companyId:req.params.companyId,isSoldOut:false,isRented:false}).sort({updatedAt:-1})
     res.status(200).json({success:true,message:'success',data:companyProperty});
   } catch (error) {
     res.status(500).json({ message: error.message });

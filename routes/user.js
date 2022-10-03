@@ -3,9 +3,12 @@ import express from "express";
 const router = express.Router();
 
 import {
-  updateUser,createCompany,userProfile,addToFavorites,userAppProfile
+  updateUser,
+  createCompany,
+  userProfile,
+  addToFavorites,
+  userAppProfile,
 } from "../Controllers/User.js";
-
 
 router.put("/find/:id", updateUser);
 router.post("/company/:id", createCompany);

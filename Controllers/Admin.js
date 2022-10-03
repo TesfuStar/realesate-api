@@ -3,18 +3,18 @@ import Property from "../Models/Property.js";
 import Owner from "../Models/Owner.js";
 import User from "../Models/User.js";
 //admin dashboard get total for all
-
+import AgentCompany from "../Models/AgentCompany.js";
 export const adminDashboard = async (req, res) => {
   try {
     const properties = await Property.find().count();
-    const owners = await Owner.find().count();
+    const agentCompanies = await AgentCompany.find().count();
     const agents = await Agent.find().count();
     const users = await User.find().count();
     res.status(200).json({
       message: "success",
       data: {
         totalProperties: properties,
-        totalCompanies: owners,
+        totalCompanies: agentCompanies,
         totalAgent: agents,
         totalUsers: users,
       },
@@ -50,8 +50,8 @@ export const getAllAgents = async (req, res) => {
 
 export const getAllCompanies = async (req, res) => {
   try {
-    const owners = await Owner.find().sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: owners });
+    const agentCompany = await AgentCompany.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: agentCompany });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -70,8 +70,8 @@ export const deleteUser = async (req, res) => {
 //delete company
 export const deleteCompany = async (req, res) => {
   try {
-    await Owner.findByIdAndDelete(req.params.id);
-    res.status(200).json("company deleted successfully");
+    await AgentCompany.findByIdAndDelete(req.params.id);
+    res.status(200).json("Agent Company deleted successfully");
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -94,7 +94,7 @@ export const getAllProperties = async (req, res) => {
 
 export const getCompanyDetail = async (req, res) => {
   try {
-    const owner = await Owner.findOne({companyId: req.params.id})
+    const agentCompany = await AgentCompany.findOne({companyId: req.params.id})
     const rentalProperties = await Property.find({
       companyId: req.params.id,
       type: "rent",
@@ -109,7 +109,7 @@ export const getCompanyDetail = async (req, res) => {
     res.status(200).json({
       success: true,
       data: { 
-        owner:owner,
+        owner:agentCompany,
         rentProperties: rentalProperties, 
         sellProperties: sellProperties,
          agents: agents,

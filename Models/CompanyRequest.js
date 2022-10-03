@@ -6,7 +6,7 @@ const companyRequestSchema = new mongoose.Schema(
     email: { type: String, required: true },
     logo: { type: String, required: true },
     address: { type: String, required: true }, //main office
-    phoneNo: { type: String, required: true },
+    phone: { type: String, required: true },
     comment: { type: String },
     isApproved: { type: Boolean, default: false },
     isRejected:{type:Boolean,default:false},

@@ -14,6 +14,7 @@ import admin from './routes/admin.js'
 import propertyAd from './routes/propertyAd.js'
 import companyRequest from './routes/companyRequest.js'
 import soldProperties from './routes/soldProperties.js'
+import agentCompany from './routes/agentCompany.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use('/api/auth',auth)
 app.use('/api/owner',owner)
 app.use('/api/property',property)
 app.use('/api/agent',agent)
+app.use('/api/agent-company',agentCompany)
 app.use('/api/user',user)
 app.use('/api/dashboard',dashboard)
 app.use('/api/admin',admin)

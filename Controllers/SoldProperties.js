@@ -74,5 +74,26 @@ export const deleteCompanyRentedProperties = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+
+
+  //re-post rented property
   
-  
+  export const rePostRentedProperty = async (req, res) => {
+    try {
+      const rentedProperty = await SoldProperties.findById(req.params.id).populate('property')
+      if(!rentedProperty) return res.status(401).json({message:"property not found"})
+      await SoldProperties.findByIdAndDelete(req.params.id)
+      const property = await Property.findByIdAndUpdate(
+        {_id:rentedProperty.property._id},
+        {
+          isRented: false,
+        },
+        { new: true }
+      );
+     
+      res.status(200).json({ success: true,property:property,message: "property removed successfully and re-posted" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
