@@ -21,8 +21,7 @@ export const createAgent = async (req, res) => {
 
   let oldEmail = await Agent.findOne({ email: joeResult.email });
 
-  let oldPhone = await Agent.findOne({ phone: joeResult.phone[0] });
-console.log(oldPhone )
+  let oldPhone = await Agent.findOne({ phone: joeResult.phone[0] || joeResult.phone[2] || joeResult.phone[2] });
   if (oldEmail)
     return res.status(400).json({ message: "email already in use" });
   if (oldPhone) return res.status(400).json({ message: "phone already in use" });
