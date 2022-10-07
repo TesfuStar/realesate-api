@@ -10,7 +10,7 @@ export const createAgent = async (req, res) => {
       companyId: Joi.string().required(),
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
-      phone:Joi.number().optional(),
+      phone:Joi.array().items(Joi.string().min(1)),
       email: Joi.string().email().lowercase().allow('').optional(),
     });
     const joeResult = await schema.validateAsync(req.body);
@@ -21,9 +21,10 @@ export const createAgent = async (req, res) => {
 
   let oldEmail = await Agent.findOne({ email: joeResult.email });
 
+  let oldPhone = await Agent.findOne({ phone: joeResult.phone[0] });
+console.log(oldPhone )
   if (oldEmail)
     return res.status(400).json({ message: "email already in use" });
-    let oldPhone = await Agent.findOne({ email: joeResult.phone });
   if (oldPhone) return res.status(400).json({ message: "phone already in use" });
   const result = await Agent.create({
     companyId:joeResult.companyId,
