@@ -9,11 +9,11 @@ export const dashboard = async (req, res) => {
     }).count();
     const propertyForSale = await Property.find({
       companyId: req.params.companyId,
-      type: "sale",
+      type: "sale",isSoldOut:false,isRented:false
     }).count();
     const propertyForRent = await Property.find({
       companyId: req.params.companyId,
-      type: "rent",
+      type: "rent",isSoldOut:false,isRented:false
     }).count();
     const soldProperties = await SoldProperties.find({
       companyId: req.params.companyId,

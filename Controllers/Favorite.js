@@ -25,13 +25,30 @@ export const addToFavorite=async(req,res)=>{
 }
 
 
-//get user gevorite 
+//get user fevorite 
 
 export const getUserFavorite=async(req,res)=>{
     try {
         const userFavorite = await Favorite.findById(req.params.id)
         if(!userFavorite) return res.status(400).json({message:'you have no favorite'})
          res.status(200).json({success:true,data:userFavorite})
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+//remove property user fevorite  .populate('properties')
+
+export const removeUserFavorite=async(req,res)=>{
+    const {id} =req.params
+    const {property} = req.body
+    try {
+        const userFavorite = await Favorite.findById(req.params.id)
+        if(!userFavorite) return res.status(400).json({message:'you have no favorite'})
+        userFavorite.properties.pop(property)
+        const updatedUserFavorite =await Favorite.findByIdAndUpdate(id,userFavorite,{new:true})
+         res.status(200).json({success:true,data:updatedUserFavorite})
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
