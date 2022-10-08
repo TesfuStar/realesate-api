@@ -54,6 +54,18 @@ export const getSingleProperty = async (req, res) => {
   }
 };
 
+
+//get single property forDashboard to remove view counter
+export const getSinglePropertyDashboard = async (req, res) => {
+  try {
+    const singleProperty = await Property.findById(req.params.id).populate("agents");
+    if(!singleProperty) return res.status(404).json({ message: "property  not found" });
+     res.status(200).json({success:true,data:singleProperty})
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 //delete property
 
 export const deleteProperty = async (req, res) => {

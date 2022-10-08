@@ -15,13 +15,15 @@ import {
   getFeaturedProperty,
   getMostlyViewedProperty,
   getCompaniesFeaturedProperty,
-  getCompaniesUnadvertisedProperty
+  getCompaniesUnadvertisedProperty,
+  getSinglePropertyDashboard
 } from "../Controllers/Property.js";
 
 router.post("/create", createProperty);
 router.get("/", getAllProperty);
 router.get("/search", getPropertiesByFilter);
 router.get("/find/:id", getSingleProperty);
+router.get("/dashboard/:id", getSinglePropertyDashboard);
 router.delete("/find/:id", deleteProperty);
 router.put("/find/:id", updateProperty);
 router.get('/type',getByPropertyType)
