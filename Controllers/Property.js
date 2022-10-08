@@ -44,7 +44,7 @@ export const getAllProperty = async (req, res) => {
 // get single property
 export const getSingleProperty = async (req, res) => {
   try {
-    const singleProperty = await Property.findById(req.params.id).populate("agents");
+    const singleProperty = await Property.findById(req.params.id).populate("agents").populate("owner")
     if(!singleProperty) return res.status(404).json({ message: "property  not found" });
     singleProperty.views++;
     const savedProperty = await singleProperty.save()

@@ -46,7 +46,7 @@ export const addToFavorite = async (req, res) => {
 
 export const getUserFavorite = async (req, res) => {
   try {
-    const userFavorite = await Favorite.findById(req.params.id);
+    const userFavorite = await Favorite.findById(req.params.id).populate('properties')
     if (!userFavorite)
       return res.status(400).json({ message: "you have no favorite" });
     res.status(200).json({ success: true, data: userFavorite });
