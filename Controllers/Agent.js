@@ -10,6 +10,7 @@ export const createAgent = async (req, res) => {
       companyId: Joi.string().required(),
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
+      profile:Joi.string().optional(),
       phone:Joi.array().items(Joi.string().min(1)),
       email: Joi.string().email().lowercase().allow('').optional(),
     });
@@ -29,6 +30,7 @@ export const createAgent = async (req, res) => {
     companyId:joeResult.companyId,
     email: joeResult.email,
     phone:joeResult.phone,
+    profile:joeResult.profile ? joeResult.profile : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
     firstName: joeResult.firstName,
     lastName: joeResult.lastName,
   });

@@ -26,8 +26,9 @@ const PropertyAdSchema = new mongoose.Schema({
     },
     views:{type:Number,default:0},
     owner:{type:mongoose.SchemaTypes.ObjectId,required:true,ref:'Owner'},//realestate owner companyId
-    agents:[{type:mongoose.SchemaTypes.ObjectId,ref:'Agent'}],
+    agents:{type:mongoose.SchemaTypes.ObjectId,ref:'Agent'},
     address:AddressSchema,
+    amenities:{type:[String],default:[]},
     isFeatured:{type:Boolean,default:false},
     isAccepted:{type:Boolean,default:false},
     isRejected:{type:Boolean,default:false},

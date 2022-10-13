@@ -172,6 +172,16 @@ export const getFeaturedProperty = async (req, res) => {
   }
 };
 
+//get company featured property for company dashboard
+export const getOwnFeaturedProperty = async (req, res) => {
+  try {
+    const properties = await Property.find({ companyId:req.params.companyId,isFeatured:true }).populate('agents');
+    res.status(200).json({success:true,data:properties});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 //get property by mostly viewed
 export const getMostlyViewedProperty = async (req, res) => {
   try {

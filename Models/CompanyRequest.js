@@ -10,6 +10,7 @@ const companyRequestSchema = new mongoose.Schema(
     comment: { type: String },
     isApproved: { type: Boolean, default: false },
     isRejected:{type:Boolean,default:false},
+    status:{type: String ,default:"Pending"}
   },
   { timestamps: true }
 );

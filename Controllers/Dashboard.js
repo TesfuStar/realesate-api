@@ -33,6 +33,7 @@ export const dashboard = async (req, res) => {
 };
 
 export const paginate = async (req, res) => {
+  
   try {
     const property = await Property.find().pagination();
     res.status(200).json(property);
@@ -40,3 +41,31 @@ export const paginate = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//sales analysis
+
+export const salesAnalysis=async(req,res)=>{
+  const date = new Date();
+  const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+  try {
+     const saleAnalysis=await Property.aggregate([
+      {$match:{isRented:true,companyId: req.params.companyId,createdAt: { $gte: lastYear }}},
+      {$match:{isSoldOut:true,companyId: req.params.companyId,createdAt: { $gte: lastYear }}},
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+     ])
+     res.status(200).json({success:true,data:saleAnalysis});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

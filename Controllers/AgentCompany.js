@@ -57,3 +57,37 @@ export const getSingleAgentCompany = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+
+
+  //get own company information
+  export const getOwnAgentCompanyInformation= async (req, res) => {
+    try {
+      const agentCompany = await AgentCompany.findOne({companyId:req.params.companyId})
+      if(!agentCompany) return res.status(400).json({message:"company not found"})
+      res.status(200).json({success:true,data:agentCompany});
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+
+
+  //update own company information
+  export const updateCompanyInformation = async (req, res) => {
+ 
+    try {
+      const company = await AgentCompany.findOne({companyId:req.params.companyId})
+      if(!company) return res.status(400).json({message:"company not found"})
+      const updatedCompany = await AgentCompany.findOneAndUpdate(
+        {companyId:req.params.companyId},
+        {
+          $set: req.body,
+        },
+        { new: true }
+      );
+      res.status(201).json({success:true,data:updatedCompany});
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };

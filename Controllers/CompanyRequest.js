@@ -2,6 +2,7 @@ import CompanyRequest from "../Models/CompanyRequest.js";
 import User from "../Models/User.js";
 import AgentCompany from "../Models/AgentCompany.js";
 import Agent from "../Models/Agent.js";
+import Notification from '../Models/Notification.js'
 import _ from "lodash";
 export const createCompanyRequest = async (req, res) => {
   const newCompanyRequest = new CompanyRequest(req.body);
@@ -100,6 +101,8 @@ export const acceptCompanyRequest = async (req, res) => {
       { companyId: savedAgentCompany.companyId, hasCompany: true },
       { new: true }
     );
+    const acceptanceNotification = new Notification({companyId:savedAgentCompany.companyId,message:"your request is accepted"})
+    const saveAcceptanceNotification = await acceptanceNotification.save();
     const agentData = _.pick(userCompany, [
       "companyId",
       "firstName",
@@ -117,7 +120,8 @@ export const acceptCompanyRequest = async (req, res) => {
         AgentCompany: savedAgentCompany,
         request: updatedCompanyRequest,
         user: userCompany,
-        agent:savedAgent
+        agent:savedAgent,
+        notification:saveAcceptanceNotification
       });
   } catch (error) {
     res.status(500).json({ message: error.message });

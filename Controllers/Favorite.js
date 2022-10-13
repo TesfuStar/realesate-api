@@ -9,10 +9,13 @@ export const addToFavorite = async (req, res) => {
   try {
     const userFavorite = await Favorite.findById(id);
     if (userFavorite) {
-        const propertyId = userFavorite.properties?.some(
-            (item) => item == property
-          );
-      if (propertyId)  return res.status(400).json({ message: "property is already in favorite" });
+      const propertyId = userFavorite.properties?.some(
+        (item) => item == property
+      );
+      if (propertyId)
+        return res
+          .status(400)
+          .json({ message: "property is already in favorite" });
       userFavorite.properties.push(property);
       const updatedUserFavorite = await Favorite.findByIdAndUpdate(
         id,
@@ -46,7 +49,9 @@ export const addToFavorite = async (req, res) => {
 
 export const getUserFavorite = async (req, res) => {
   try {
-    const userFavorite = await Favorite.findById(req.params.id).populate('properties')
+    const userFavorite = await Favorite.findById(req.params.id).populate(
+      "properties"
+    );
     if (!userFavorite)
       return res.status(400).json({ message: "you have no favorite" });
     res.status(200).json({ success: true, data: userFavorite });
@@ -69,7 +74,9 @@ export const removeUserFavorite = async (req, res) => {
     );
     if (!propertyId)
       return res.status(400).json({ message: "property not found" });
-    userFavorite.properties.pop(property);
+    const indexProperty = userFavorite.properties.indexOf(property);
+    console.log(indexProperty);
+    userFavorite.properties.splice(indexProperty, 1);
     const updatedUserFavorite = await Favorite.findByIdAndUpdate(
       id,
       userFavorite,

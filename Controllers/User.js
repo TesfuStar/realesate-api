@@ -2,6 +2,7 @@ import User from "../Models/User.js";
 import bcrypt from "bcryptjs";
 import Owner from "../Models/Owner.js";
 import Property from "../Models/Property.js";
+import AgentCompany from "../Models/AgentCompany.js";
 import _ from 'lodash'
 // update user
 
@@ -23,7 +24,7 @@ export const updateUser = async (req, res) => {
       { new: true }
     );
     const selectedProp = _.pick(updatedUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
-    res.status(201).json(selectedProp);
+    res.status(201).json({success:true,data:selectedProp});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -53,7 +54,7 @@ export const createCompany = async (req, res) => {
 export const userProfile = async (req, res) => {
   try {
     const user = await User.findOne({companyId:req.params.companyId})
-    const owner = await Owner.findOne({companyId:req.params.companyId})
+    const owner = await AgentCompany.findOne({companyId:req.params.companyId})
 
     res.status(200).json({success:true,data:{user:user,company:owner}});
   } catch (error) {
