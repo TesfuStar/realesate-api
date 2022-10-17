@@ -1,8 +1,9 @@
 import mongoose from 'mongoose'
 const notificationSchema=new mongoose.Schema({
-    companyId:{type:String,required:true},
-    title:{type:String,required:true},
-    message:{type:String,required:true},
+    userId:{type:String},
+    companyId:{type:String},
+    title:{type:String},
+    message:{type:String},
     readAt:{type:Date,default:null}
     
 },{timestamps:true})

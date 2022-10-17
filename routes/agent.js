@@ -1,4 +1,10 @@
 import express from "express";
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+  verifyToken,
+} from "../Middleware/authorization.js";
 
 const router = express.Router();
 
@@ -9,14 +15,14 @@ import {
   deleteSingleAgent,
   updateAgent,
   getCompanyAgent,
-  deleteCompanyAgent
+  deleteCompanyAgent,
 } from "../Controllers/Agent.js";
 
-router.post("/create", createAgent);
-router.get("/", getAllAgents);
-router.get("/find/:id", getSingleAgent);
-router.get("/company/:companyId", getCompanyAgent);
-router.delete("/find/:id", deleteSingleAgent);
-router.delete("/company/:id", deleteCompanyAgent);
-router.put("/find/:id", updateAgent);
+router.post("/create", verifyTokenAndCompanyAdmin, createAgent);
+router.get("/", verifyTokenAndAdmin, getAllAgents);
+router.get("/find/:id", verifyToken, getSingleAgent);
+router.get("/company/:companyId", verifyTokenAndAuthorization, getCompanyAgent);
+router.delete("/find/:id", verifyTokenAndAuthorization, deleteSingleAgent);
+router.delete("/company/:id", verifyTokenAndAuthorization, deleteCompanyAgent);
+router.put("/find/:id", verifyTokenAndAuthorization, updateAgent);
 export default router;

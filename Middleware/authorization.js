@@ -16,7 +16,7 @@ export const verifyToken = (req,res,next)=>{
 
 export const verifyTokenAndAuthorization=(req,res,next)=>{
     verifyToken(req,res,()=>{
-        if(req.user._id === req.params.id || req.user.isAdmin)  {
+        if(req.user._id === req.params.id || req.user.isAdmin || req.user.hasCompany)  {
              next();
         }
         else{
@@ -29,7 +29,7 @@ export const verifyTokenAndAuthorization=(req,res,next)=>{
 //ABOUT COMPANY
 export const verifyTokenAndCompanyAdmin=(req,res,next)=>{
     verifyToken(req,res,()=>{
-        if(req.user.hasCompany)  {
+        if(req.user.hasCompany )  {
              next()
           }
         else{

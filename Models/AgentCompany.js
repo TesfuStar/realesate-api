@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 const agentCompanySchema=new mongoose.Schema({
     companyId:{type:String, default:uuidv4()},
     name:{type:String,required:true,unique:true},
-    logo:{type:String,required:true},
+    logo:{type:String},
     address:{type:String,required:true},//main office
-    phone:{type:String,required:true}
+    phone:{type:String,required:true,unique:true}
 })
 
 const AgentCompany = mongoose.model('AgentCompany',agentCompanySchema)

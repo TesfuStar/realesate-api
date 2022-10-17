@@ -15,7 +15,8 @@ const userSchema = mongoose.Schema(
     password: { type: String },
     isAdmin:{type:Boolean,default:false},
     favorites:{type:[mongoose.SchemaTypes.ObjectId],ref:'Property'},
-    hasCompany:{type:Boolean,default:false}
+    hasCompany:{type:Boolean,default:false},
+    status:{type:String,default:null},
   },
   { timestamps: true }
 );

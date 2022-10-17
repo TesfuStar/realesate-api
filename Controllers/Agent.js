@@ -22,7 +22,7 @@ export const createAgent = async (req, res) => {
 
   let oldEmail = await Agent.findOne({ email: joeResult.email });
 
-  let oldPhone = await Agent.findOne({ phone: joeResult.phone[0] || joeResult.phone[2] || joeResult.phone[2] });
+  let oldPhone = await Agent.findOne({ phone: joeResult.phone[0] || joeResult.phone[1] || joeResult.phone[2] });
   if (oldEmail)
     return res.status(400).json({ message: "email already in use" });
   if (oldPhone) return res.status(400).json({ message: "phone already in use" });
@@ -34,7 +34,7 @@ export const createAgent = async (req, res) => {
     firstName: joeResult.firstName,
     lastName: joeResult.lastName,
   });
-   res.status(201).json(result);
+   res.status(201).json({success:true,data:result});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -70,7 +70,7 @@ export const getSingleAgent = async (req, res) => {
   export const deleteSingleAgent= async (req, res) => {
     try {
       await Agent.findByIdAndDelete(req.params.id)
-      res.status(200).json("Agent deleted succssfully");
+      res.status(200).json("Agent deleted successfully");
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

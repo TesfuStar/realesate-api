@@ -28,7 +28,7 @@ export const getAllOwners = async (req, res) => {
 export const getSingleCompany = async (req, res) => {
     try {
       const owner = await Owner.findById(req.params.id)
-      res.status(200).json(owner);
+      res.status(200).json({message:true,data:owner});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

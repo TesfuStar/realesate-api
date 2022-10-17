@@ -40,7 +40,7 @@ export const signIn = async (req, res) => {
         expiresIn: "1d",
       }
     );
-    const selectedProp = _.pick(oldUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    const selectedProp = _.pick(oldUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','status','createdAt','updatedAt'])
 
     res.status(200).json({ result:selectedProp, token });
   } catch (error) {
@@ -87,7 +87,7 @@ export const signUp = async (req, res) => {
     const token = jwt.sign({ email: result.email }, process.env.JWT_KEY, {
       expiresIn: "1h",
     });
-    const selectedProp = _.pick(result,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    const selectedProp = _.pick(result,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','status','createdAt','updatedAt'])
     res.status(201).json({ result:selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)

@@ -3,8 +3,10 @@ import AgentCompany from "../Models/AgentCompany.js";
 //create agent(company)
 
 export const createAgentCompany = async (req, res) => {
-  const newAgentCompany = new AgentCompany(req.body);
   try {
+    const findPhone = await AgentCompany.findOne({phone:req.body.phone})
+    if(findPhone) return res.status(400).json({message:"phone number already in use"})
+    const newAgentCompany = new AgentCompany(req.body);
     const savedAgentCompany = await newAgentCompany.save();
     res.status(201).json({success:true,data:savedAgentCompany});
   } catch (error) {
@@ -27,7 +29,7 @@ export const getAllAgentCompany = async (req, res) => {
 // get single AgentCompany
 export const getSingleAgentCompany = async (req, res) => {
     try {
-      const singleAgentCompany = await AgentCompany.AgentCompany(req.params.id)
+      const singleAgentCompany = await AgentCompany.findById(req.params.id)
       res.status(200).json({success:true,data:singleAgentCompany});
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -40,7 +42,7 @@ export const getSingleAgentCompany = async (req, res) => {
   export const deleteAgentCompany= async (req, res) => {
     try {
       await AgentCompany.findByIdAndDelete(req.params.id)
-      res.status(200).json({success:true,message:"owner deleted succssfully"});
+      res.status(200).json({success:true,message:"owner deleted successfully"});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

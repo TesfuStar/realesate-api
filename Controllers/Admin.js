@@ -7,6 +7,9 @@ import AgentCompany from "../Models/AgentCompany.js";
 export const adminDashboard = async (req, res) => {
   try {
     const properties = await Property.find().count();
+    const soldProperties = await Property.find({isSoldOut:true}).count();
+    const rentedProperties = await Property.find({isRented:true}).count();
+    const featuredProperties = await Property.find({isFeatured:true}).count();
     const agentCompanies = await AgentCompany.find().count();
     const agents = await Agent.find().count();
     const users = await User.find().count();
@@ -17,6 +20,9 @@ export const adminDashboard = async (req, res) => {
         totalCompanies: agentCompanies,
         totalAgent: agents,
         totalUsers: users,
+        totalRentedProperties:rentedProperties,
+        totalSoldProperties:soldProperties,
+        totalFeaturedProperties:featuredProperties
       },
     });
   } catch (error) {
@@ -104,6 +110,9 @@ export const getCompanyDetail = async (req, res) => {
       type: "sell",
     }).count();
     const agents = await Agent.find({ companyId: req.params.id }).count();
+    const rentedProperty = await Property.find({companyId: req.params.id,isRented:true}).count();
+    const soldProperty = await Property.find({companyId: req.params.id,isSoldOut:true}).count();
+    const adProperty = await Property.find({companyId: req.params.id,isFeatured:true}).count();
     const allProperties = await Property.find({companyId: req.params.id,}).sort({createdAt:-1})
     const allAgents = await Agent.find({companyId: req.params.id,}).sort({createdAt:-1})
     res.status(200).json({
@@ -114,9 +123,13 @@ export const getCompanyDetail = async (req, res) => {
         sellProperties: sellProperties,
          agents: agents,
          properties:allProperties,
-         allAgents:allAgents },
+         allAgents:allAgents,
+         soldProperty:soldProperty,
+         rentedProperty:rentedProperty,
+         adProperty:adProperty },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+// 1000 37 63 85 508

@@ -1,5 +1,5 @@
 import Property from "../Models/Property.js";
-
+import AgentCompany from '../Models/AgentCompany.js'
 //create all property
 
 export const createProperty = async (req, res) => {
@@ -18,7 +18,7 @@ export const getAllProperty = async (req, res) => {
   const options = {
     page: req.query.page,
     populate: 'agents',
-    sort:{updatedAt:-1},
+    sort:{createdAt:-1},
 
     limit: 2,
     collation: {
@@ -58,9 +58,10 @@ export const getSingleProperty = async (req, res) => {
 //get single property forDashboard to remove view counter
 export const getSinglePropertyDashboard = async (req, res) => {
   try {
-    const singleProperty = await Property.findById(req.params.id).populate("agents");
+    const singleProperty = await Property.findById(req.params.id).populate("agents").populate("owner");
     if(!singleProperty) return res.status(404).json({ message: "property  not found" });
-     res.status(200).json({success:true,data:singleProperty})
+    const agentPoster = await AgentCompany.findOne({companyId:singleProperty.companyId})
+     res.status(200).json({success:true,data:singleProperty,poster:agentPoster})
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -140,7 +141,7 @@ export const getByPropertyType = async (req, res) => {
   }
 };
 
-//get all properties or by realstate owner
+//get all properties or by reale-state owner
 
 export const getPropertyByOwner = async (req, res) => {
   try {
@@ -165,7 +166,7 @@ export const getCompaniesProperty=async(req,res)=>{
 //get featured property
 export const getFeaturedProperty = async (req, res) => {
   try {
-    const properties = await Property.find({ isFeatured:true }).populate('agents');
+    const properties = await Property.find({ isFeatured:true }).populate('agents').sort({createdAt:-1});
     res.status(200).json({success:true,data:properties});
   } catch (error) {
     res.status(500).json({ message: error.message });

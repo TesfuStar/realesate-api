@@ -7,7 +7,7 @@ const AgentSchema = new mongoose.Schema(
     profile: {
       type: String,
     },
-    phone: { type: [String], required: true },
+    phone: { type: [String], required: true,unique:true },
     email: { type: String },
     hasCompany: { type: Boolean, default: false },
     comments: { type: [String], default: [] },

@@ -15,9 +15,9 @@ export const dashboard = async (req, res) => {
       companyId: req.params.companyId,
       type: "rent",isSoldOut:false,isRented:false
     }).count();
-    const soldProperties = await SoldProperties.find({
-      companyId: req.params.companyId,
-    }).count();
+    const soldProperties = await Property.find({companyId: req.params.companyId,isSoldOut:true}).count();
+    const rentedProperties = await Property.find({companyId: req.params.companyId,isRented:true}).count();
+    const featuredProperties = await Property.find({companyId: req.params.companyId,isFeatured:true}).count();
     res.status(200).json({
       success: true,
       data: {
@@ -25,6 +25,8 @@ export const dashboard = async (req, res) => {
         propertyForSale: propertyForSale,
         propertyForRent: propertyForRent,
         soldProperties: soldProperties,
+        rentedProperties:rentedProperties,
+        featuredProperties:featuredProperties
       },
     });
   } catch (error) {

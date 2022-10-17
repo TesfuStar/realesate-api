@@ -2,13 +2,36 @@ import CompanyRequest from "../Models/CompanyRequest.js";
 import User from "../Models/User.js";
 import AgentCompany from "../Models/AgentCompany.js";
 import Agent from "../Models/Agent.js";
-import Notification from '../Models/Notification.js'
+import Notification from "../Models/Notification.js";
 import _ from "lodash";
 export const createCompanyRequest = async (req, res) => {
   const newCompanyRequest = new CompanyRequest(req.body);
   try {
+    const oldPhone =await CompanyRequest.findOne({phone:req.body.phone})
+    if(oldPhone) return res.status(400).json({message:"phone already in use"})
+    const oldEmail =await CompanyRequest.findOne({email:req.body.email})
+    if(oldEmail) return res.status(400).json({message:"Email already in use"})
     const savedCompanyRequest = await newCompanyRequest.save();
-    res.status(201).json({ success: true, data: savedCompanyRequest });
+    const notifiedUser = await User.findOne({ isAdmin: true });
+    const requestNotification = new Notification({
+      userId: notifiedUser._id,
+      title: "Agent company request",
+      message: `You have new Agent Company request from ${savedCompanyRequest?.name}`,
+    });
+    const saveRequestNotification = await requestNotification.save();
+    const requestUser = await User.findOneAndUpdate(
+      { _id: req.body.userId },
+      { status: "Pending" },
+      { new: true }
+    );
+    res
+      .status(201)
+      .json({
+        success: true,
+        data: savedCompanyRequest,
+        user: requestUser,
+        notification: saveRequestNotification,
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -19,9 +42,7 @@ export const userLandingProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const company = await CompanyRequest.findOne({ userId: req.params.id });
-    res
-      .status(200)
-      .json({ success: true, data: { user: user, company: company } });
+    res.status(200).json({ success: true, data: { user: user, company: company } });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -98,10 +119,18 @@ export const acceptCompanyRequest = async (req, res) => {
 
     const userCompany = await User.findOneAndUpdate(
       { _id: req.body.userId },
-      { companyId: savedAgentCompany.companyId, hasCompany: true },
+      {
+        companyId: savedAgentCompany.companyId,
+        hasCompany: true,
+        status: "Accepted",
+      },
       { new: true }
     );
-    const acceptanceNotification = new Notification({companyId:savedAgentCompany.companyId,message:"your request is accepted"})
+    const acceptanceNotification = new Notification({
+      companyId: savedAgentCompany.companyId,
+      title: "Company Request",
+      message: "your request is accepted",
+    });
     const saveAcceptanceNotification = await acceptanceNotification.save();
     const agentData = _.pick(userCompany, [
       "companyId",
@@ -109,20 +138,18 @@ export const acceptCompanyRequest = async (req, res) => {
       "lastName",
       "phone",
       "email",
-      "hasCompany"
+      "hasCompany",
     ]);
     const createAgent = new Agent(agentData);
     const savedAgent = await createAgent.save();
-    res
-      .status(200)
-      .json({
-        message: "success",
-        AgentCompany: savedAgentCompany,
-        request: updatedCompanyRequest,
-        user: userCompany,
-        agent:savedAgent,
-        notification:saveAcceptanceNotification
-      });
+    res.status(200).json({
+      message: "success",
+      AgentCompany: savedAgentCompany,
+      request: updatedCompanyRequest,
+      user: userCompany,
+      agent: savedAgent,
+      notification: saveAcceptanceNotification,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

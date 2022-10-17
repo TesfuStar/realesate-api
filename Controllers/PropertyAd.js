@@ -2,12 +2,27 @@ import PropertyAd from "../Models/PropertyAd.js";
 import Notification from "../Models/Notification.js";
 import Property from "../Models/Property.js";
 import _ from "lodash";
+import User from "../Models/User.js";
+
 //create property ads
 export const createPropertyAd = async (req, res) => {
   const newPropertyAd = new PropertyAd(req.body);
   try {
     const savedPropertyAd = await newPropertyAd.save();
-    res.status(201).json({ success: true, data: savedPropertyAd });
+    const notifiedUser = await User.findOne({ isAdmin: true });
+    const requestNotification = new Notification({
+      userId: notifiedUser._id,
+      title: "property Ad request",
+      message: `You have new Property Ad request`,
+    });
+    const saveRequestNotification = await requestNotification.save();
+    res
+      .status(201)
+      .json({
+        success: true,
+        data: savedPropertyAd,
+        notification: saveRequestNotification,
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -19,7 +34,7 @@ export const acceptPropertyAds = async (req, res) => {
     const companyAd = await PropertyAd.findById(req.params.id);
     if (!companyAd)
       return res.status(400).json({ message: "request Ad not found" });
-      const isExisted = await Property.findById(req.params.id);
+    const isExisted = await Property.findById(req.params.id);
     const updatedCompanyAd = await PropertyAd.findByIdAndUpdate(
       req.params.id,
       {
@@ -28,7 +43,7 @@ export const acceptPropertyAds = async (req, res) => {
       },
       { new: true }
     );
-    if(isExisted){
+    if (isExisted) {
       const updatedProperty = await Property.findByIdAndUpdate(
         req.params.id,
         {
@@ -38,8 +53,8 @@ export const acceptPropertyAds = async (req, res) => {
       );
       const propertyAdNotification = new Notification({
         companyId: updatedProperty.companyId,
-        title:"Property Lucence",
-        message: "congratulations your Ad request is is accepted",
+        title: "Property ads",
+        message: "congra your Ad request is is accepted",
       });
       const savePropertyAdNotification = await propertyAdNotification.save();
       res.status(200).json({
@@ -48,8 +63,7 @@ export const acceptPropertyAds = async (req, res) => {
         requestAd: updatedCompanyAd,
         notification: savePropertyAdNotification,
       });
-    }else{
-
+    } else {
       const requestAdData = _.pick(updatedCompanyAd, [
         "companyId",
         "name",
@@ -62,14 +76,14 @@ export const acceptPropertyAds = async (req, res) => {
         "agents",
         "address",
         "isFeatured",
-        "amenities"
+        "amenities",
       ]);
       const createProperty = new Property(requestAdData);
       const savedProperty = await createProperty.save();
       const propertyAdNotification = new Notification({
         companyId: savedProperty.companyId,
-        title:"Property Lucence",
-        message: "congratulations your Ad request is is accepted",
+        title: "Property ads",
+        message: "congra your Ad request is is accepted",
       });
       const savePropertyAdNotification = await propertyAdNotification.save();
       res.status(200).json({
@@ -79,7 +93,6 @@ export const acceptPropertyAds = async (req, res) => {
         notification: savePropertyAdNotification,
       });
     }
-   
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -96,16 +109,15 @@ export const rejectPropertyAds = async (req, res) => {
     await PropertyAd.findByIdAndDelete(req.params.id);
     const propertyAdNotification = new Notification({
       companyId: savedAgentCompany.companyId,
+      title:"Property Ad request",
       message: "your Ads request is rejected",
     });
     const savePropertyAdNotification = await propertyAdNotification.save();
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "success",
-        notification: savePropertyAdNotification,
-      });
+    res.status(200).json({
+      success: true,
+      message: "success",
+      notification: savePropertyAdNotification,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -116,7 +128,7 @@ export const getCompanyRequestAds = async (req, res) => {
     const companyAdsRequest = await PropertyAd.find({
       companyId: req.params.companyId,
       isAccepted: false,
-    }).sort({ updatedAt: -1 });
+    }).sort({ createdAt: -1 });
     res
       .status(200)
       .json({ success: true, message: "success", data: companyAdsRequest });
@@ -129,7 +141,7 @@ export const getCompanyRequestAds = async (req, res) => {
 export const getAllCompanyRequestAds = async (req, res) => {
   try {
     const allAdsRequest = await PropertyAd.find({ isAccepted: false }).sort({
-      updatedAt: -1,
+      createdAt: -1,
     });
     res
       .status(200)

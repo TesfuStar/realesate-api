@@ -23,7 +23,7 @@ export const updateUser = async (req, res) => {
       },
       { new: true }
     );
-    const selectedProp = _.pick(updatedUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    const selectedProp = _.pick(updatedUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany',"status",'createdAt','updatedAt'])
     res.status(201).json({success:true,data:selectedProp});
   } catch (error) {
     res.status(500).json({ message: error.message });
