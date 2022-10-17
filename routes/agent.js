@@ -18,11 +18,11 @@ import {
   deleteCompanyAgent,
 } from "../Controllers/Agent.js";
 
-router.post("/create", verifyTokenAndCompanyAdmin, createAgent);
-router.get("/", verifyTokenAndAdmin, getAllAgents);
+router.post("/create", createAgent);
+router.get("/", getAllAgents);
 router.get("/find/:id", verifyToken, getSingleAgent);
-router.get("/company/:companyId", verifyTokenAndAuthorization, getCompanyAgent);
-router.delete("/find/:id", verifyTokenAndAuthorization, deleteSingleAgent);
-router.delete("/company/:id", verifyTokenAndAuthorization, deleteCompanyAgent);
-router.put("/find/:id", verifyTokenAndAuthorization, updateAgent);
+router.get("/company/:companyId", getCompanyAgent);
+router.delete("/find/:id", deleteSingleAgent);
+router.delete("/company/:id", deleteCompanyAgent);
+router.put("/find/:id", updateAgent);
 export default router;
