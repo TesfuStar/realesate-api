@@ -110,9 +110,9 @@ export const getPropertiesByFilter = async (req, res) => {
   } = req.query;
   try {
     const property = await Property.find({
-      price: { $gte: minprice | 100, $lte: maxprice || 20000000 },
-      "details.bedroom": { $gte: bedroom | 1 },
-      "details.bathroom": { $gte: bathroom | 1 },
+      price: { $gte: minprice | 0, $lte: maxprice || 20000000 },
+      "details.bedroom": { $gte: bedroom | 0 },
+      "details.bathroom": { $gte: bathroom | 0 },
       "details.area": { $gte: minarea | 0, $lte: maxarea || 10000 },
       type: type ? { $in: [type] } : { $in: ["sale", "rent"] },
       owner: owner ? { $eq: owner } : { $exists: true },
