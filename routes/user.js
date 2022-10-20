@@ -8,9 +8,11 @@ import {
   userProfile,
   addToFavorites,
   userAppProfile,
+  getSingleUser
 } from "../Controllers/User.js";
 
 router.put("/find/:id", updateUser);
+router.get("/find/:id", getSingleUser);
 router.post("/company/:id", createCompany);
 router.get("/profile/:companyId", userProfile);
 router.put("/find/favorite/:id", addToFavorites);

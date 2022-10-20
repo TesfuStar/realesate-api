@@ -93,3 +93,15 @@ export const userAppProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//get single user
+export const getSingleUser = async (req, res) => {
+  try {
+    const singleUser = await User.findById(req.params.id);
+    if(!singleUser) return res.status(404).json({ message: "user  not found" });
+     res.status(200).json({success:true,data:singleUser})
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

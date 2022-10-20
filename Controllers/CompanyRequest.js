@@ -7,10 +7,17 @@ import _ from "lodash";
 export const createCompanyRequest = async (req, res) => {
   const newCompanyRequest = new CompanyRequest(req.body);
   try {
-    const oldPhone =await CompanyRequest.findOne({phone:req.body.phone})
-    if(oldPhone) return res.status(400).json({message:"phone already in use"})
-    const oldEmail =await CompanyRequest.findOne({email:req.body.email})
-    if(oldEmail) return res.status(400).json({message:"Email already in use"})
+    const oldPhone = await CompanyRequest.findOne({ phone: req.body.phone });
+    if (oldPhone)
+      return res.status(400).json({ message: "phone already in use" });
+    const oldEmail = await CompanyRequest.findOne({ email: req.body.email });
+    if (oldEmail)
+      return res.status(400).json({ message: "Email already in use" });
+    const oldName = await CompanyRequest.findOne({ name: req.body.name });
+    if (oldName)
+      return res
+        .status(400)
+        .json({ message: "this real estate already exist" });
     const savedCompanyRequest = await newCompanyRequest.save();
     const notifiedUser = await User.findOne({ isAdmin: true });
     const requestNotification = new Notification({
@@ -24,14 +31,12 @@ export const createCompanyRequest = async (req, res) => {
       { status: "Pending" },
       { new: true }
     );
-    res
-      .status(201)
-      .json({
-        success: true,
-        data: savedCompanyRequest,
-        user: requestUser,
-        notification: saveRequestNotification,
-      });
+    res.status(201).json({
+      success: true,
+      data: savedCompanyRequest,
+      user: requestUser,
+      notification: saveRequestNotification,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -42,7 +47,9 @@ export const userLandingProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const company = await CompanyRequest.findOne({ userId: req.params.id });
-    res.status(200).json({ success: true, data: { user: user, company: company } });
+    res
+      .status(200)
+      .json({ success: true, data: { user: user, company: company } });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -79,7 +86,10 @@ export const getAllAcceptedCompanyRequest = async (req, res) => {
 export const getSingleCompanyRequest = async (req, res) => {
   try {
     const companyRequest = await CompanyRequest.findById(req.params.id);
-    res.status(200).json({ success: true, data: companyRequest });
+    const requestSender = await User.findOne()
+    res
+      .status(200)
+      .json({ success: true, data: companyRequest, user: requestSender });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

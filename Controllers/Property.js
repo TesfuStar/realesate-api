@@ -113,7 +113,7 @@ export const getPropertiesByFilter = async (req, res) => {
       price: { $gte: minprice | 100, $lte: maxprice || 20000000 },
       "details.bedroom": { $gte: bedroom | 1 },
       "details.bathroom": { $gte: bathroom | 1 },
-      "details.area": { $gte: minarea | 100, $lte: maxarea || 10000 },
+      "details.area": { $gte: minarea | 0, $lte: maxarea || 10000 },
       type: type ? { $in: [type] } : { $in: ["sale", "rent"] },
       owner: owner ? { $eq: owner } : { $exists: true },
       "address.city": city ? { $in: [city] } : { $exists: true },

@@ -26,7 +26,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-  
+//   process.env.MONGO_URL
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log('db connection successful'))
 .catch((e)=>{console.log(e)})
