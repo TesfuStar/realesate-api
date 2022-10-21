@@ -15,6 +15,7 @@ const PropertySchema = new mongoose.Schema({
     images:{type:[String],required:true,},
     price:{type:Number,required:true},
     description:{type:String,required:true},//text description for the property 
+    paymentDescription:{type:String,required:true},
     type:{type:String,required:true}, //rent or sale
     details:{
         area:{type:Number,required:true},//in square
@@ -31,11 +32,12 @@ const PropertySchema = new mongoose.Schema({
     amenities:{type:[String],default:[]},
     isFeatured:{type:Boolean,default:false},
     isRented:{type:Boolean,default:false},
+    isFurnished:{type:Boolean,default:false},
     isSoldOut:{type:Boolean,default:false},
 },{timestamps:true})
 
 PropertySchema.plugin(paginate)
 const Property = mongoose.model('Property',PropertySchema)
-
+//payment agreement description
 
 export default Property

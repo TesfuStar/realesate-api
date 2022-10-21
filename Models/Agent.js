@@ -10,7 +10,6 @@ const AgentSchema = new mongoose.Schema(
     phone: { type: [String], required: true,unique:true },
     email: { type: String },
     hasCompany: { type: Boolean, default: false },
-    comments: { type: [String], default: [] },
   },
   { timestamps: true }
 );

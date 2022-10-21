@@ -17,6 +17,8 @@ import soldProperties from './routes/soldProperties.js'
 import agentCompany from './routes/agentCompany.js'
 import favorite from './routes/favorite.js'
 import notification from './routes/notification.js'
+import comment from './routes/comment.js'
+import adBanner from './routes/adBanner.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -47,6 +49,8 @@ app.use('/api/company',companyRequest)
 app.use('/api/sold',soldProperties)
 app.use('/api/favorite',favorite)
 app.use('/api/notification',notification)
+app.use('/api/comment',comment)
+app.use('/api/banner',adBanner)
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT,()=>{console.log("server is running")})
