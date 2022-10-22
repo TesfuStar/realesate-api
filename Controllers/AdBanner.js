@@ -1,12 +1,15 @@
 import AdBanner from "../Models/AdBanner.js";
 import Notification from "../Models/Notification.js";
+import User from "../Models/User.js";
+
 //request ad banner
 export const postAdBanner = async (req, res) => {
   const bannerAds = new AdBanner(req.body);
   try {
     const savedBannerAd = await bannerAds.save();
+    const notifiedUser = await User.findOne({ isAdmin: true });
     const newAdRequestNotification = new Notification({
-      userId: req.body.userId,
+      userId: notifiedUser._id,
       title: "Ads Banner request",
       message: `Your have new ads banner request`,
     });
@@ -26,9 +29,11 @@ export const postAdBanner = async (req, res) => {
 export const getOwnCompanyRequestAds = async (req, res) => {
   try {
     const agentCompanyBannerAds = await AdBanner.find({
-      AgentCompanyId: req.params.companyId,
+      AgentCompany: req.params.companyId,
       isAccepted: false,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("owner")
+      .sort({ createdAt: -1 });
     res
       .status(200)
       .json({ success: true, message: "success", data: agentCompanyBannerAds });
@@ -71,7 +76,7 @@ export const acceptCompanyBannerAds = async (req, res) => {
       { new: true }
     );
     const acceptanceAdNotification = new Notification({
-      companyId: getBannerAd.AgentCompanyId,
+      companyId: getBannerAd.AgentCompany,
       title: "Ads Banner request",
       message: `Your ads banner request is accepted`,
     });
@@ -96,6 +101,68 @@ export const getBannerAds = async (req, res) => {
       success: true,
       data: bannerAds,
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//delete banner
+export const deleteOwnBanner = async (req, res) => {
+  try {
+    const banner = await AdBanner.findById(req.params.id);
+    if (!banner) return res.status(404).json({ message: "banner not found" });
+    await AdBanner.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "banner deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//edit banner
+export const editOwnBanner = async (req, res) => {
+  try {
+    const banner = await AdBanner.findById(req.params.id);
+    if (!banner) return res.status(404).json({ message: "banner not found" });
+    const updatedBanner = await AdBanner.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: updatedBanner });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all unaccepted banner ads for admin
+export const getAllCompanyRequestAds = async (req, res) => {
+  try {
+    const agentCompanyBannerAds = await AdBanner.find({
+      isAccepted: false,
+      isRejected: false,
+    })
+      .populate("owner")
+      .sort({ createdAt: -1 });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: agentCompanyBannerAds });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all accepted banner ads
+export const getAllCompanyAcceptedBannerAds = async (req, res) => {
+  try {
+    const agentCompanyBannerAds = await AdBanner.find({
+      isAccepted: true,
+      isRejected: false,
+    })
+      .populate("owner")
+      .sort({ createdAt: -1 });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: agentCompanyBannerAds });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

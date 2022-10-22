@@ -1,5 +1,6 @@
 import Property from "../Models/Property.js";
-import AgentCompany from '../Models/AgentCompany.js'
+import AgentCompany from "../Models/AgentCompany.js";
+import Comment from "../Models/Comment.js";
 //create all property
 
 export const createProperty = async (req, res) => {
@@ -17,22 +18,20 @@ export const createProperty = async (req, res) => {
 export const getAllProperty = async (req, res) => {
   const options = {
     page: req.query.page,
-    populate: 'agents',
-    sort:{createdAt:-1},
+    populate: "agents",
+    sort: { createdAt: -1 },
 
     limit: 2,
     collation: {
       locale: "en",
     },
   };
-  
 
   try {
     const allProperties = await Property.paginate(
-      {isRented:false,isSoldOut:false},
+      { isRented: false, isSoldOut: false },
       options,
       function (err, result) {
-  
         res.status(200).json(result);
       }
     );
@@ -44,24 +43,52 @@ export const getAllProperty = async (req, res) => {
 // get single property
 export const getSingleProperty = async (req, res) => {
   try {
-    const singleProperty = await Property.findById(req.params.id).populate("agents").populate("owner")
-    if(!singleProperty) return res.status(404).json({ message: "property  not found" });
+    const singleProperty = await Property.findById(req.params.id)
+      .populate("agents")
+      .populate("owner");
+    if (!singleProperty)
+      return res.status(404).json({ message: "property  not found" });
     singleProperty.views++;
-    const savedProperty = await singleProperty.save()
-     res.status(200).json({success:true,data:savedProperty})
+    const lat = singleProperty.address.loc[1];
+    const long = singleProperty.address.loc[0];
+    const relatedProperty = await Property.find({
+      'address.loc': {
+        $near: { $geometry: { type: "Point", coordinates: [long, lat] },
+        $minDistance: 50,
+        $maxDistance: 50000
+      },
+      
+      },
+    });
+   
+    const savedProperty = await singleProperty.save();
+    res.status(200).json({ success: true, data: savedProperty,related:relatedProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
 //get single property forDashboard to remove view counter
 export const getSinglePropertyDashboard = async (req, res) => {
   try {
-    const singleProperty = await Property.findById(req.params.id).populate("agents").populate("owner");
-    if(!singleProperty) return res.status(404).json({ message: "property  not found" });
-    const agentPoster = await AgentCompany.findOne({companyId:singleProperty.companyId})
-     res.status(200).json({success:true,data:singleProperty,poster:agentPoster})
+    const singleProperty = await Property.findById(req.params.id)
+      .populate("agents")
+      .populate("owner");
+    if (!singleProperty)
+      return res.status(404).json({ message: "property  not found" });
+    const agentPoster = await AgentCompany.findOne({
+      companyId: singleProperty.companyId,
+    });
+    const agentComment = await Comment.find({
+      agent: singleProperty.agents._id,
+    }).populate("user");
+
+    res.status(200).json({
+      success: true,
+      data: singleProperty,
+      poster: agentPoster,
+      comments: agentComment,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,7 +115,7 @@ export const updateProperty = async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).json({success:true,data:property});
+    res.status(200).json({ success: true, data: property });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -153,21 +180,28 @@ export const getPropertyByOwner = async (req, res) => {
 };
 
 //get company property
-export const getCompaniesProperty=async(req,res)=>{
+export const getCompaniesProperty = async (req, res) => {
   try {
-    const companyProperty = await Property.find({companyId:req.params.companyId,isSoldOut:false,isRented:false}).sort({updatedAt:-1})
-    res.status(200).json({success:true,message:'success',data:companyProperty});
+    const companyProperty = await Property.find({
+      companyId: req.params.companyId,
+      isSoldOut: false,
+      isRented: false,
+    }).sort({ updatedAt: -1 });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: companyProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
-
+};
 
 //get featured property
 export const getFeaturedProperty = async (req, res) => {
   try {
-    const properties = await Property.find({ isFeatured:true }).populate('agents').sort({createdAt:-1});
-    res.status(200).json({success:true,data:properties});
+    const properties = await Property.find({ isFeatured: true })
+      .populate("agents")
+      .sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: properties });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -176,8 +210,11 @@ export const getFeaturedProperty = async (req, res) => {
 //get company featured property for company dashboard
 export const getOwnFeaturedProperty = async (req, res) => {
   try {
-    const properties = await Property.find({ companyId:req.params.companyId,isFeatured:true }).populate('agents');
-    res.status(200).json({success:true,data:properties});
+    const properties = await Property.find({
+      companyId: req.params.companyId,
+      isFeatured: true,
+    }).populate("agents");
+    res.status(200).json({ success: true, data: properties });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -186,30 +223,41 @@ export const getOwnFeaturedProperty = async (req, res) => {
 //get property by mostly viewed
 export const getMostlyViewedProperty = async (req, res) => {
   try {
-    const properties = await Property.find().populate('agents').sort({views:-1})
-    res.status(200).json({success:true,data:properties});
+    const properties = await Property.find()
+      .populate("agents")
+      .sort({ views: -1 });
+    res.status(200).json({ success: true, data: properties });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
 //get companies featured properties
-export const getCompaniesFeaturedProperty=async(req,res)=>{
+export const getCompaniesFeaturedProperty = async (req, res) => {
   try {
-    const companyProperty = await Property.find({companyId:req.params.companyId,isFeatured:true})
-    res.status(200).json({success:true,message:'success',data:companyProperty});
+    const companyProperty = await Property.find({
+      companyId: req.params.companyId,
+      isFeatured: true,
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: companyProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
 //get companies featured properties
-export const getCompaniesUnadvertisedProperty=async(req,res)=>{
+export const getCompaniesUnadvertisedProperty = async (req, res) => {
   try {
-    const companyProperty = await Property.find({companyId:req.params.companyId,isFeatured:false})
-    res.status(200).json({success:true,message:'success',data:companyProperty});
+    const companyProperty = await Property.find({
+      companyId: req.params.companyId,
+      isFeatured: false,
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: companyProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};

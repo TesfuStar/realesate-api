@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
 const bannerAdSchema=new mongoose.Schema({
-    userId:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},
-    ownerId:{type:mongoose.SchemaTypes.ObjectId,ref:'Owner'},
-    AgentCompanyId:{type:mongoose.SchemaTypes.ObjectId,ref:'AgentCompany'},
+    user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},
+    owner:{type:mongoose.SchemaTypes.ObjectId,ref:'Owner'},
+    AgentCompany:{type:String},
     image:{type:String,required:true},
+    name:{type:String},
     isAccepted:{type:Boolean,default:false},
     isRejected:{type:Boolean,default:false},
 },{timestamps:true})
