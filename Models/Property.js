@@ -35,6 +35,7 @@ const PropertySchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     isRented: { type: Boolean, default: false },
     isFurnished: { type: Boolean, default: false },
+    isRequestedForAd : { type: Boolean, default: false },
     isSoldOut: { type: Boolean, default: false },
   },
   { timestamps: true }

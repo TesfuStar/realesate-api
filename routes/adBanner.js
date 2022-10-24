@@ -11,10 +11,12 @@ import {
   deleteOwnBanner,
   editOwnBanner,
   getAllCompanyRequestAds,
-  getAllCompanyAcceptedBannerAds
+  getAllCompanyAcceptedBannerAds,
+  getSingleBanner
 } from "../Controllers/AdBanner.js";
 
 router.post("/add", postAdBanner);
+router.get("/company/find/:id", getSingleBanner); 
 router.get("/company/unaccepted/:companyId", getOwnCompanyRequestAds); //unaccepted ads
 router.get("/unaccepted/all", getAllCompanyRequestAds); //unaccepted ads all for admin
 router.get("/accepted/all", getAllCompanyAcceptedBannerAds); //unaccepted ads all for admin

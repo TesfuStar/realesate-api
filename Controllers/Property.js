@@ -1,6 +1,7 @@
 import Property from "../Models/Property.js";
 import AgentCompany from "../Models/AgentCompany.js";
 import Comment from "../Models/Comment.js";
+import PropertyAd from "../Models/PropertyAd.js";
 //create all property
 
 export const createProperty = async (req, res) => {
@@ -52,17 +53,19 @@ export const getSingleProperty = async (req, res) => {
     const lat = singleProperty.address.loc[1];
     const long = singleProperty.address.loc[0];
     const relatedProperty = await Property.find({
-      'address.loc': {
-        $near: { $geometry: { type: "Point", coordinates: [long, lat] },
-        $minDistance: 50,
-        $maxDistance: 50000
-      },
-      
+      "address.loc": {
+        $near: {
+          $geometry: { type: "Point", coordinates: [long, lat] },
+          $minDistance: 50,
+          $maxDistance: 50000,
+        },
       },
     });
-   
+
     const savedProperty = await singleProperty.save();
-    res.status(200).json({ success: true, data: savedProperty,related:relatedProperty });
+    res
+      .status(200)
+      .json({ success: true, data: savedProperty, related: relatedProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -74,6 +77,7 @@ export const getSinglePropertyDashboard = async (req, res) => {
     const singleProperty = await Property.findById(req.params.id)
       .populate("agents")
       .populate("owner");
+      console.log(singleProperty)
     if (!singleProperty)
       return res.status(404).json({ message: "property  not found" });
     const agentPoster = await AgentCompany.findOne({
@@ -99,6 +103,10 @@ export const getSinglePropertyDashboard = async (req, res) => {
 export const deleteProperty = async (req, res) => {
   try {
     await Property.findByIdAndDelete(req.params.id);
+    const isAd = PropertyAd.findById(req.params.id);
+    if (isAd) {
+      await PropertyAd.findByIdAndDelete(req.params.id);
+    }
     res.status(200).json("property deleted succssfully");
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -253,6 +261,9 @@ export const getCompaniesUnadvertisedProperty = async (req, res) => {
     const companyProperty = await Property.find({
       companyId: req.params.companyId,
       isFeatured: false,
+      isSoldOut: false,
+      isRented: false,
+      isRequestedForAd: false,
     });
     res
       .status(200)

@@ -167,3 +167,16 @@ export const getAllCompanyAcceptedBannerAds = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//get single banner 
+export const getSingleBanner=async(req,res)=>{
+  try {
+    const singleBanner = await AdBanner.findById(req.params.id)
+    res
+    .status(200)
+    .json({ success: true, message: "success", data: singleBanner });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

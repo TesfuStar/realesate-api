@@ -1,7 +1,7 @@
 import Agent from "../Models/Agent.js";
 import Property from "../Models/Property.js";
 import SoldProperties from "../Models/SoldProperties.js";
-
+import AdBanner from '../Models/AdBanner.js'
 export const dashboard = async (req, res) => {
   try {
     const agents = await Agent.find({
@@ -18,6 +18,7 @@ export const dashboard = async (req, res) => {
     const soldProperties = await Property.find({companyId: req.params.companyId,isSoldOut:true}).count();
     const rentedProperties = await Property.find({companyId: req.params.companyId,isRented:true}).count();
     const featuredProperties = await Property.find({companyId: req.params.companyId,isFeatured:true}).count();
+    const bannerAds = await AdBanner.find({companyId: req.params.companyId,isAccepted:true}).count();
     res.status(200).json({
       success: true,
       data: {
@@ -26,7 +27,8 @@ export const dashboard = async (req, res) => {
         propertyForRent: propertyForRent,
         soldProperties: soldProperties,
         rentedProperties:rentedProperties,
-        featuredProperties:featuredProperties
+        featuredProperties:featuredProperties,
+        bannerAds:bannerAds
       },
     });
   } catch (error) {

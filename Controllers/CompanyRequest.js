@@ -7,6 +7,35 @@ import _ from "lodash";
 export const createCompanyRequest = async (req, res) => {
   const newCompanyRequest = new CompanyRequest(req.body);
   try {
+    const oldRequest = await CompanyRequest.findOne({
+      _id: newCompanyRequest._id,
+    });
+    if (oldRequest) {
+      const oldRequest = await CompanyRequest.findOneAndUpdate(
+        { _id: newCompanyRequest._id },
+        { $set: req.body },
+        {new:true}
+      );
+      const notifiedUser = await User.findOne({ isAdmin: true });
+      const requestNotification = new Notification({
+        userId: notifiedUser._id,
+        title: "Agent company request",
+        message: `You have new Agent Company request from ${oldRequest?.name}`,
+      });
+      const saveRequestNotification = await requestNotification.save();
+      const requestUser = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { status: "Pending" },
+        { new: true }
+      );
+      res.status(201).json({
+        success: true,
+        data: oldRequest,
+        user: requestUser,
+        notification: saveRequestNotification,
+      });
+      return ;
+    }
     const oldPhone = await CompanyRequest.findOne({ phone: req.body.phone });
     if (oldPhone)
       return res.status(400).json({ message: "phone already in use" });
@@ -86,7 +115,7 @@ export const getAllAcceptedCompanyRequest = async (req, res) => {
 export const getSingleCompanyRequest = async (req, res) => {
   try {
     const companyRequest = await CompanyRequest.findById(req.params.id);
-    const requestSender = await User.findOne()
+    const requestSender = await User.findOne();
     res
       .status(200)
       .json({ success: true, data: companyRequest, user: requestSender });
@@ -123,12 +152,13 @@ export const acceptCompanyRequest = async (req, res) => {
       req.params.id,
       {
         isApproved: true,
+        status: "Approved",
       },
       { new: true }
     );
 
-    const userCompany = await User.findOneAndUpdate(
-      { _id: req.body.userId },
+    const userCompany = await User.findByIdAndUpdate(
+      req.params.id,
       {
         companyId: savedAgentCompany.companyId,
         hasCompany: true,

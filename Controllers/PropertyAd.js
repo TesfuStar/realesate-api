@@ -9,6 +9,17 @@ export const createPropertyAd = async (req, res) => {
   const newPropertyAd = new PropertyAd(req.body);
   try {
     const savedPropertyAd = await newPropertyAd.save();
+    const isBeforeExisted = await Property.findOne({_id:savedPropertyAd._id})
+    console.log(isBeforeExisted)
+    if(isBeforeExisted){
+        await Property.findOneAndUpdate(
+        {_id:savedPropertyAd._id},
+        {
+          isRequestedForAd:true
+        },
+        { new: true }
+      );
+    }
     const notifiedUser = await User.findOne({ isAdmin: true });
     const requestNotification = new Notification({
       userId: notifiedUser._id,
@@ -196,6 +207,43 @@ export const getOwnCompanyRequestAds = async (req, res) => {
     res
       .status(200)
       .json({ success: true, message: "success", data: companyAdsRequest });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+//delete own property ad request
+export const deletePropertyAdRequest = async (req, res) => {
+  try {
+    await PropertyAd.findByIdAndDelete(req.params.id);
+    res.status(200).json("property ad request deleted succssfully");
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//update propertyad request
+export const updatePropertyAdRequest = async (req, res) => {
+  try {
+    const property = await PropertyAd.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    const isAlsoProperty  = await Property.findOne({_id:property._id})
+    if(isAlsoProperty){
+      await Property.findOneAndUpdate(
+        {_id:property._id},
+        {
+          $set: req.body,
+        },
+        { new: true }
+      );
+    }
+    res.status(200).json({ success: true, data: property });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

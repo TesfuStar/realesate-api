@@ -8,7 +8,9 @@ import {
   getCompanyRequestAds,
   getAllCompanyRequestAds,
   getAcceptedCompanyRequestAds,
-  getSingleAdProperty
+  getSingleAdProperty,
+  deletePropertyAdRequest,
+  updatePropertyAdRequest
 } from "../Controllers/PropertyAd.js";
 
 router.post("/create", createPropertyAd);
@@ -17,4 +19,6 @@ router.get("/company/:companyId", getCompanyRequestAds);
 router.get("/all", getAllCompanyRequestAds);
 router.get("/accepted", getAcceptedCompanyRequestAds);
 router.get("/company/ad/:id", getSingleAdProperty);
+router.put("/company/ad/find/:id", updatePropertyAdRequest);
+router.delete("/company/find/:id", deletePropertyAdRequest);
 export default router;
