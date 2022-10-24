@@ -185,9 +185,8 @@ export const getAcceptedCompanyRequestAds = async (req, res) => {
 //get single Ad request
 export const getSingleAdProperty = async (req, res) => {
   try {
-    const singleAdProperty = await PropertyAd.findById(req.params.id).populate(
-      "agents"
-    );
+    const singleAdProperty = await PropertyAd.findById(req.params.id).populate("agents")
+    .populate("owner");
     // .populate("agents");
     if (!singleAdProperty)
       return res.status(404).json({ message: "property ad not found" });
