@@ -3,7 +3,8 @@ import Notification from "../Models/Notification.js";
 import Property from "../Models/Property.js";
 import _ from "lodash";
 import User from "../Models/User.js";
-
+import AgentCompany from "../Models/AgentCompany.js";
+import Comment from "../Models/Comment.js";
 //create property ads
 export const createPropertyAd = async (req, res) => {
   const newPropertyAd = new PropertyAd(req.body);
@@ -190,11 +191,15 @@ export const getSingleAdProperty = async (req, res) => {
     // .populate("agents");
     if (!singleAdProperty)
       return res.status(404).json({ message: "property ad not found" });
-
+      const agentPoster = await AgentCompany.findOne({
+        companyId: singleAdProperty.companyId,
+      });
+      const agentComment = await Comment.find({
+        agent: singleAdProperty.agents._id,
+      }).populate("user");
     res
       .status(200)
-      .json({ success: true, data: singleAdProperty, message: "found" });
-    console.log(singleAdProperty);
+      .json({ success: true, data: singleAdProperty, poster: agentPoster,  comments: agentComment, });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
