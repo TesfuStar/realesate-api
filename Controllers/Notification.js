@@ -111,3 +111,18 @@ export const markAllAsReadNotification = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//mark all as read for admin
+export const markAllAsReadNotificationForAdmin = async (req, res) => {
+  try {
+    const updateNotification = await Notification.updateMany(
+      { id: req.params.id, readAt: null },
+      { readAt: new Date() },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: updateNotification });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

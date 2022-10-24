@@ -9,7 +9,8 @@ import {
   sendNotification,
   markAllAsReadNotification,
   getAllAdminNotification,
-  getAllUnreadAdminNotification
+  getAllUnreadAdminNotification,
+  markAllAsReadNotificationForAdmin
 } from "../Controllers/Notification.js";
 
 router.get("/company/:companyId", getAllCompanyNotification);
@@ -19,4 +20,5 @@ router.get("/admin/unread/:userId", getAllUnreadAdminNotification);
 router.get("/mark/:id", markAsReadNotification);
 router.post("/send", sendNotification);
 router.get("/company/all/unread/:companyId", markAllAsReadNotification);
+router.get("/admin/all/unread/:companyId", markAllAsReadNotificationForAdmin);
 export default router;

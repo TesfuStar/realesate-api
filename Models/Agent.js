@@ -4,11 +4,9 @@ const AgentSchema = new mongoose.Schema(
     companyId: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    profile: {
-      type: String,
-    },
+    profile: {type: String,},
     phone: { type: [String], required: true,unique:true },
-    email: { type: String },
+    email: { type: String,default:null },
     hasCompany: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -28,7 +28,7 @@ export const createAgent = async (req, res) => {
   if (oldPhone) return res.status(400).json({ message: "phone already in use" });
   const result = await Agent.create({
     companyId:joeResult.companyId,
-    email: joeResult.email,
+    email:joeResult.profile ? joeResult.email :"",
     phone:joeResult.phone,
     profile:joeResult.profile ? joeResult.profile : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
     firstName: joeResult.firstName,

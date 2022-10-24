@@ -81,6 +81,7 @@ export const acceptPropertyAds = async (req, res) => {
         "images",
         "price",
         "description",
+        "paymentDescription",
         "type",
         "details",
         "owner",
@@ -114,12 +115,16 @@ export const acceptPropertyAds = async (req, res) => {
 export const rejectPropertyAds = async (req, res) => {
   try {
     const companyAd = await PropertyAd.findById(req.params.id);
+    const isExisted = await Property.findById(req.params.id);
     if (!companyAd)
       return res.status(400).json({ message: "request Ad not found" });
-
+    
+    if(isExisted){
+      await Property.findByIdAndUpdate(req.params.id,{isRequestedForAd:false},{new:true})
+    }
     await PropertyAd.findByIdAndDelete(req.params.id);
     const propertyAdNotification = new Notification({
-      companyId: savedAgentCompany.companyId,
+      companyId: companyAd.companyId,
       title:"Property Ad request",
       message: "your Ads request is rejected",
     });
