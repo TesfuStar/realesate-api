@@ -2,6 +2,7 @@ import AdBanner from "../Models/AdBanner.js";
 import Notification from "../Models/Notification.js";
 import User from "../Models/User.js";
 import AgentCompany from "../Models/AgentCompany.js";
+import _ from "lodash";
 //request ad banner
 export const postAdBanner = async (req, res) => {
   const bannerAds = new AdBanner(req.body);
@@ -97,9 +98,17 @@ export const acceptCompanyBannerAds = async (req, res) => {
 export const getBannerAds = async (req, res) => {
   try {
     const bannerAds = await AdBanner.find({ isAccepted: true });
+    const selectedProps = _.map(bannerAds,_.partialRight(_.pick, [
+      "user",
+      "owner",
+      "AgentCompany",
+      "image",
+      "createdAt",
+      "updatedAt",
+    ]));
     res.status(200).json({
       success: true,
-      data: bannerAds,
+      data: selectedProps,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -172,16 +181,24 @@ export const getAllCompanyAcceptedBannerAds = async (req, res) => {
 //get single banner
 export const getSingleBanner = async (req, res) => {
   try {
-    const singleBanner = await AdBanner.findById(req.params.id).populate("owner");
-    const agentCompany = await AgentCompany.findOne({companyId:singleBanner.AgentCompany})
+    const singleBanner = await AdBanner.findById(req.params.id).populate(
+      "owner"
+    );
+    const agentCompany = await AgentCompany.findOne({
+      companyId: singleBanner.AgentCompany,
+    });
     res
       .status(200)
-      .json({ success: true, message: "success", data: singleBanner,company:agentCompany });
+      .json({
+        success: true,
+        message: "success",
+        data: singleBanner,
+        company: agentCompany,
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 //reject banner ads
 export const rejectCompanyBannerAds = async (req, res) => {

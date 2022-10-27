@@ -86,7 +86,7 @@ export const addToFavorites=async(req,res)=>{
 export const userAppProfile = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-    const selectedProp = _.pick(user,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','createdAt','updatedAt'])
+    const selectedProp = _.pick(user,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','status','createdAt','updatedAt'])
 
     res.status(200).json({success:true,profile:selectedProp});
   } catch (error) {
