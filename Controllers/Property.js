@@ -197,7 +197,7 @@ export const getCompaniesProperty = async (req, res) => {
     }).sort({ updatedAt: -1 });
     res
       .status(200)
-      .json({ success: true, message: "success", data: companyProperty });
+      .json({ success: true,  data: companyProperty });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

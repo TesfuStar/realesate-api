@@ -49,7 +49,7 @@ export const getOwnCompanyAcceptedAds = async (req, res) => {
     const agentCompanyAcceptedBannerAds = await AdBanner.find({
       AgentCompanyId: req.params.companyId,
       isAccepted: true,
-    }).sort({ createdAt: -1 });
+    }) .populate("owner").sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       message: "success",
@@ -172,7 +172,7 @@ export const getAllCompanyAcceptedBannerAds = async (req, res) => {
       .sort({ createdAt: -1 });
     res
       .status(200)
-      .json({ success: true, message: "success", data: agentCompanyBannerAds });
+      .json({ success: true, data: agentCompanyBannerAds });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

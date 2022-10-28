@@ -3,6 +3,7 @@ import User from "../Models/User.js";
 import AgentCompany from "../Models/AgentCompany.js";
 import Agent from "../Models/Agent.js";
 import Notification from "../Models/Notification.js";
+import nodemailer from 'nodemailer'
 import _ from "lodash";
 export const createCompanyRequest = async (req, res) => {
   const newCompanyRequest = new CompanyRequest(req.body);
@@ -13,7 +14,7 @@ export const createCompanyRequest = async (req, res) => {
     if (oldRequest) {
       const oldRequest = await CompanyRequest.findOneAndUpdate(
         { _id: newCompanyRequest._id },
-        { $set: req.body },
+        { $set: req.body,isApproved:false,isRejected:false },
         { new: true }
       );
       const notifiedUser = await User.findOne({ isAdmin: true });
@@ -102,7 +103,19 @@ export const getAllCompanyRequest = async (req, res) => {
 export const getAllAcceptedCompanyRequest = async (req, res) => {
   try {
     const allCompanyRequest = await CompanyRequest.find({
-      isApproved: true,
+      isApproved: true,isRejected:false
+    }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: allCompanyRequest });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all rejected Company request
+export const getAllRejectedCompanyRequest = async (req, res) => {
+  try {
+    const allCompanyRequest = await CompanyRequest.find({
+      isRejected: true,isApproved:false
     }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: allCompanyRequest });
   } catch (error) {
@@ -199,7 +212,25 @@ export const acceptCompanyRequest = async (req, res) => {
 
 export const rejectCompanyRequest = async (req, res) => {
   try {
-    await CompanyRequest.findByIdAndDelete(req.params.id);
+    let testAccount = await nodemailer.createTestAccount();
+    let transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
+      },
+    });
+    let info = await transporter.sendMail({
+      from: '"Fred Foo 👻"Et Homes', // sender address
+      to: "abdilami91@gmail.com", // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Hello world?", // plain text body
+      html: "<b>Hello world? this is a sample et homes</b>", // html body
+    });
+    console.log("Message sent: %s", info);
+   const request =  await CompanyRequest.findByIdAndUpdate(req.params.id,{isRejected:true},{new:true});
     const requestSenderUser = await User.findByIdAndUpdate(
       req.params.id,
       { status: null },
@@ -209,7 +240,7 @@ export const rejectCompanyRequest = async (req, res) => {
     res
       .status(200)
       .json({
-        message: "Company Request deleted successfully",
+        request:request,
         user: requestSenderUser,
       });
   } catch (error) {

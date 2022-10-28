@@ -10,13 +10,15 @@ import {
   getCompanyUserRequest,
   acceptCompanyRequest,
   getAllAcceptedCompanyRequest,
-  rejectCompanyRequest
+  rejectCompanyRequest,
+  getAllRejectedCompanyRequest
 } from "../Controllers/CompanyRequest.js";
 
 router.post("/create", createCompanyRequest);
 router.get("/profile/:id", userLandingProfile);
 router.get("/request", getAllCompanyRequest);
 router.get("/request-accepted", getAllAcceptedCompanyRequest);
+router.get("/request-rejected", getAllRejectedCompanyRequest);
 router.get("/request/:id", getSingleCompanyRequest);
 router.get("/request/user/:id", getCompanyUserRequest);
 router.post("/request/:id", acceptCompanyRequest);
