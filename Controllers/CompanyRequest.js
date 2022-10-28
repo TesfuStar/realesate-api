@@ -14,7 +14,7 @@ export const createCompanyRequest = async (req, res) => {
       const oldRequest = await CompanyRequest.findOneAndUpdate(
         { _id: newCompanyRequest._id },
         { $set: req.body },
-        {new:true}
+        { new: true }
       );
       const notifiedUser = await User.findOne({ isAdmin: true });
       const requestNotification = new Notification({
@@ -34,7 +34,7 @@ export const createCompanyRequest = async (req, res) => {
         user: requestUser,
         notification: saveRequestNotification,
       });
-      return ;
+      return;
     }
     const oldPhone = await CompanyRequest.findOne({ phone: req.body.phone });
     if (oldPhone)
@@ -115,7 +115,7 @@ export const getAllAcceptedCompanyRequest = async (req, res) => {
 export const getSingleCompanyRequest = async (req, res) => {
   try {
     const companyRequest = await CompanyRequest.findById(req.params.id);
-    const requestSender = await User.findOne();
+    const requestSender = await User.findById(req.params.id);
     res
       .status(200)
       .json({ success: true, data: companyRequest, user: requestSender });
@@ -197,10 +197,21 @@ export const acceptCompanyRequest = async (req, res) => {
 
 //delete request
 
-export const deleteCompanyRequest = async (req, res) => {
+export const rejectCompanyRequest = async (req, res) => {
   try {
     await CompanyRequest.findByIdAndDelete(req.params.id);
-    res.status(200).json("Company Request deleted successfully");
+    const requestSenderUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: null },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({
+        message: "Company Request deleted successfully",
+        user: requestSenderUser,
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

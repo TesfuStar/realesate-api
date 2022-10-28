@@ -10,7 +10,7 @@ import {
   getCompanyUserRequest,
   acceptCompanyRequest,
   getAllAcceptedCompanyRequest,
-  deleteCompanyRequest
+  rejectCompanyRequest
 } from "../Controllers/CompanyRequest.js";
 
 router.post("/create", createCompanyRequest);
@@ -20,5 +20,5 @@ router.get("/request-accepted", getAllAcceptedCompanyRequest);
 router.get("/request/:id", getSingleCompanyRequest);
 router.get("/request/user/:id", getCompanyUserRequest);
 router.post("/request/:id", acceptCompanyRequest);
-router.delete("/request/:id", deleteCompanyRequest);
+router.get("/request/reject/:id", rejectCompanyRequest); //reject request
 export default router;
