@@ -9,11 +9,13 @@ import {
   updateAgentCompany,
   deleteAgentCompany,
   updateCompanyInformation,
-  getOwnAgentCompanyInformation
+  getOwnAgentCompanyInformation,
+  getAllCompanyForApp
 } from "../Controllers/AgentCompany.js";
 
 router.post("/create", createAgentCompany);
 router.get("/", getAllAgentCompany); //admin only
+router.get("/app", getAllCompanyForApp); //for app only
 router.get("/find/:id", getSingleAgentCompany);
 router.get("/find/own/:companyId", getOwnAgentCompanyInformation);
 router.delete("/find/:id", deleteAgentCompany);

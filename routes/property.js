@@ -17,7 +17,8 @@ import {
   getCompaniesFeaturedProperty,
   getCompaniesUnadvertisedProperty,
   getSinglePropertyDashboard,
-  getOwnFeaturedProperty
+  getOwnFeaturedProperty,
+  getAllAgentCompanyProperty
 } from "../Controllers/Property.js";
 
 router.post("/create", createProperty);
@@ -30,6 +31,7 @@ router.put("/find/:id", updateProperty);
 router.get('/type',getByPropertyType)
 router.get('/owner/:id',getPropertyByOwner)
 router.get('/company/:companyId',getCompaniesProperty)
+router.get('/company/app/:companyId',getAllAgentCompanyProperty) //for app
 router.get("/featured", getFeaturedProperty);
 router.get("/company/featured/:companyId", getOwnFeaturedProperty);
 router.get("/mostly-viewed", getMostlyViewedProperty);

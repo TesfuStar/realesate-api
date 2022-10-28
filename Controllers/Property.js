@@ -77,7 +77,7 @@ export const getSinglePropertyDashboard = async (req, res) => {
     const singleProperty = await Property.findById(req.params.id)
       .populate("agents")
       .populate("owner");
-      console.log(singleProperty)
+    console.log(singleProperty);
     if (!singleProperty)
       return res.status(404).json({ message: "property  not found" });
     const agentPoster = await AgentCompany.findOne({
@@ -268,6 +268,21 @@ export const getCompaniesUnadvertisedProperty = async (req, res) => {
     res
       .status(200)
       .json({ success: true, message: "success", data: companyProperty });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all property of agentCompany for app
+
+export const getAllAgentCompanyProperty = async (req, res) => {
+  try {
+    const agentProperties = await Property.find({
+      companyId: req.params.companyId,
+      isSoldOut: false,
+      isRented: false,
+    });
+    res.status(200).json({success:true,data:agentProperties})
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

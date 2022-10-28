@@ -93,3 +93,18 @@ export const getSingleAgentCompany = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+
+
+  //get all gent company for app
+
+  export const getAllCompanyForApp=async(req,res)=>{
+    try {
+           const agentCompany = await AgentCompany.find()
+           res.status(200).json({success:true,data:agentCompany})
+      
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+      
+    }
+  }

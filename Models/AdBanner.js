@@ -6,7 +6,7 @@ const bannerAdSchema=new mongoose.Schema({
     image:{type:String,required:true},
     name:{type:String,default:null},
     isAccepted:{type:Boolean,default:false},
-    isRejected:{type:Boolean,default:false},
+    isRejected:{type:Boolean,default:false}
 },{timestamps:true})
 
 const AdBanner = mongoose.model('AdBanner',bannerAdSchema)
