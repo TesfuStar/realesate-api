@@ -52,7 +52,7 @@ export const getSingleProperty = async (req, res) => {
     singleProperty.views++;
     const lat = singleProperty.address.loc[1];
     const long = singleProperty.address.loc[0];
-    const relatedProperty = await Property.find({
+    const relatedProperty = await Property.find({isSoldOut:false,isRented:false,isHided:false,
       "address.loc": {
         $near: {
           $geometry: { type: "Point", coordinates: [long, lat] },

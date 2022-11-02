@@ -38,7 +38,7 @@ export const signIn = async (req, res) => {
       },
       process.env.JWT_KEY,
       {
-        expiresIn: "1m",
+        expiresIn: "3d",
       }
     );
     const selectedProp = _.pick(oldUser, [
@@ -101,7 +101,7 @@ export const signUp = async (req, res) => {
       { email: result.email, hasCompany: result.hasCompany },
       process.env.JWT_KEY,
       {
-        expiresIn: "1m",
+        expiresIn: "3d",
       }
     );
     const selectedProp = _.pick(result, [
