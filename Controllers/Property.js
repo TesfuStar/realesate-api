@@ -30,7 +30,7 @@ export const getAllProperty = async (req, res) => {
 
   try {
     const allProperties = await Property.paginate(
-      { isRented: false, isSoldOut: false },
+      { isRented: false, isSoldOut: false,isHided:false },
       options,
       function (err, result) {
         res.status(200).json(result);
@@ -144,7 +144,7 @@ export const getPropertiesByFilter = async (req, res) => {
     owner,
   } = req.query;
   try {
-    const property = await Property.find({
+    const property = await Property.find({isSoldOut:false,isRented:false,isFeatured:false,
       price: { $gte: minprice | 0, $lte: maxprice || 20000000 },
       "details.bedroom": { $gte: bedroom | 0 },
       "details.bathroom": { $gte: bathroom | 0 },
@@ -168,7 +168,7 @@ export const getByPropertyType = async (req, res) => {
     properties = await Property.find({
       type: {
         $in: [queryText],
-      },
+      },isHided:false,isSoldOut:false,isRented:false
     }).populate("agents");
     res.status(200).json(properties);
   } catch (error) {
@@ -231,7 +231,7 @@ export const getOwnFeaturedProperty = async (req, res) => {
 //get property by mostly viewed
 export const getMostlyViewedProperty = async (req, res) => {
   try {
-    const properties = await Property.find()
+    const properties = await Property.find({isHided:false,isSoldOut:false,isRented:false})
       .populate("agents")
       .sort({ views: -1 });
     res.status(200).json({ success: true, data: properties });
@@ -281,6 +281,7 @@ export const getAllAgentCompanyProperty = async (req, res) => {
       companyId: req.params.companyId,
       isSoldOut: false,
       isRented: false,
+      isHided:false
     });
     res.status(200).json({success:true,data:agentProperties})
   } catch (error) {

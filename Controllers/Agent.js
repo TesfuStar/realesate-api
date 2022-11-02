@@ -2,6 +2,8 @@ import Agent from "../Models/Agent.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Joi from "@hapi/joi";
+import Property from '../Models/Property.js'
+import PropertyAd from "../Models/PropertyAd.js";
 //create Agent
 
 export const createAgent = async (req, res) => {
@@ -69,8 +71,12 @@ export const getSingleAgent = async (req, res) => {
 
   export const deleteSingleAgent= async (req, res) => {
     try {
+      const deletedAgent = await Agent.findById(req.params.id)
+      if(!deletedAgent) return res.status(400).json({message:"agent not found"})
+      await Property.deleteMany({agents:deletedAgent._id})
+      await PropertyAd.deleteMany({agents:oldAgent._id})
       await Agent.findByIdAndDelete(req.params.id)
-      res.status(200).json("Agent deleted successfully");
+      res.status(200).json("Agent and properties deleted successfully deleted successfully");
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -105,6 +111,8 @@ export const getSingleAgent = async (req, res) => {
     try {
       const oldAgent = await Agent.findById(req.params.id)
       if(!oldAgent) return  res.status(400).json({ message: "agent not found" });
+      await Property.deleteMany({agents:oldAgent._id})
+      await PropertyAd.deleteMany({agents:oldAgent._id})
       await Agent.findByIdAndDelete(req.params.id)
       res.status(200).json("Agent deleted successfully");
     } catch (error) {

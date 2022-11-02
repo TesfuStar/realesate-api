@@ -2,7 +2,7 @@ import User from "../Models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Joi from "@hapi/joi";
-import _ from 'lodash'
+import _ from "lodash";
 export const signIn = async (req, res) => {
   try {
     const schema = Joi.object().keys({
@@ -34,15 +34,29 @@ export const signIn = async (req, res) => {
         phone: oldUser.phone,
         isAdmin: oldUser.isAdmin,
         companyId: oldUser.companyId,
+        hasCompany: oldUser.hasCompany,
       },
       process.env.JWT_KEY,
       {
-        expiresIn: "1d",
+        expiresIn: "1m",
       }
     );
-    const selectedProp = _.pick(oldUser,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','status','createdAt','updatedAt'])
+    const selectedProp = _.pick(oldUser, [
+      "_id",
+      "companyId",
+      "firstName",
+      "lastName",
+      "profile",
+      "email",
+      "phone",
+      "isAdmin",
+      "hasCompany",
+      "status",
+      "createdAt",
+      "updatedAt",
+    ]);
 
-    res.status(200).json({ result:selectedProp, token });
+    res.status(200).json({ result: selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });
@@ -58,7 +72,6 @@ export const signUp = async (req, res) => {
       phone: Joi.number().optional(),
       email: Joi.string().email().lowercase().required(),
       password: Joi.string().min(6).required(),
-      
     });
     const joeResult = await schema.validateAsync(req.body);
 
@@ -71,8 +84,8 @@ export const signUp = async (req, res) => {
 
     if (oldEmail)
       return res.status(400).json({ message: "email already in use" });
-      let oldPhone = await User.findOne({ phone: joeResult.phone });
-      if (oldPhone)
+    let oldPhone = await User.findOne({ phone: joeResult.phone });
+    if (oldPhone)
       return res.status(400).json({ message: "phone already in use" });
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(joeResult.password, salt);
@@ -84,11 +97,28 @@ export const signUp = async (req, res) => {
       firstName: joeResult.firstName,
       lastName: joeResult.lastName,
     });
-    const token = jwt.sign({ email: result.email }, process.env.JWT_KEY, {
-      expiresIn: "1h",
-    });
-    const selectedProp = _.pick(result,['_id','companyId','firstName','lastName','profile','email','phone','isAdmin','hasCompany','status','createdAt','updatedAt'])
-    res.status(201).json({ result:selectedProp, token });
+    const token = jwt.sign(
+      { email: result.email, hasCompany: result.hasCompany },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "1m",
+      }
+    );
+    const selectedProp = _.pick(result, [
+      "_id",
+      "companyId",
+      "firstName",
+      "lastName",
+      "profile",
+      "email",
+      "phone",
+      "isAdmin",
+      "hasCompany",
+      "status",
+      "createdAt",
+      "updatedAt",
+    ]);
+    res.status(201).json({ result: selectedProp, token });
   } catch (error) {
     if (error.isJoi === true)
       return res.status(400).json({ message: error.details[0].message });

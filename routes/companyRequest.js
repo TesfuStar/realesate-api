@@ -14,13 +14,20 @@ import {
   getAllRejectedCompanyRequest
 } from "../Controllers/CompanyRequest.js";
 
-router.post("/create", createCompanyRequest);
-router.get("/profile/:id", userLandingProfile);
-router.get("/request", getAllCompanyRequest);
-router.get("/request-accepted", getAllAcceptedCompanyRequest);
-router.get("/request-rejected", getAllRejectedCompanyRequest);
-router.get("/request/:id", getSingleCompanyRequest);
-router.get("/request/user/:id", getCompanyUserRequest);
-router.post("/request/:id", acceptCompanyRequest);
-router.get("/request/reject/:id", rejectCompanyRequest); //reject request
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+} from "../Middleware/authorization.js";
+
+
+router.post("/create",verifyTokenAndAuthorization, createCompanyRequest);
+router.get("/profile/:id",verifyTokenAndAuthorization, userLandingProfile);
+router.get("/request",verifyTokenAndAdmin, getAllCompanyRequest);
+router.get("/request-accepted",verifyTokenAndAdmin, getAllAcceptedCompanyRequest);
+router.get("/request-rejected",verifyTokenAndAdmin, getAllRejectedCompanyRequest);
+router.get("/request/:id",verifyTokenAndAdmin, getSingleCompanyRequest);
+router.get("/request/user/:id",verifyTokenAndAdmin, getCompanyUserRequest);
+router.post("/request/:id",verifyTokenAndAdmin, acceptCompanyRequest);
+router.get("/request/reject/:id",verifyTokenAndAdmin, rejectCompanyRequest); //reject request
 export default router;

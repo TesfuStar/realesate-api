@@ -11,10 +11,16 @@ import {
   rePostRentedProperty
 } from "../Controllers/SoldProperties.js";
 
-router.get("/company/sold/:companyId", getCompanySoldProperties);
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+} from "../Middleware/authorization.js";
+
+router.get("/company/sold/:companyId",verifyTokenAndAuthorization, getCompanySoldProperties);
 router.get("/company/rented/:companyId", getCompanyRentedProperties);
-router.get("/add/sold/:id", addToSoldProperties);
-router.get("/add/rented/:id", addToRentedProperties);
-router.get("/remove/rented/:id", rePostRentedProperty);
-router.delete("/find/:id", deleteCompanyRentedProperties);
+router.get("/add/sold/:id",verifyTokenAndCompanyAdmin, addToSoldProperties);
+router.get("/add/rented/:id",verifyTokenAndCompanyAdmin, addToRentedProperties);
+router.get("/remove/rented/:id",verifyTokenAndCompanyAdmin, rePostRentedProperty);
+router.delete("/find/:id",verifyTokenAndCompanyAdmin, deleteCompanyRentedProperties);
 export default router;

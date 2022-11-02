@@ -1,5 +1,9 @@
 import express from "express";
-
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+} from "../Middleware/authorization.js";
 const router = express.Router();
 
 import {
@@ -13,18 +17,20 @@ import {
   getAllCompanyRequestAds,
   getAllCompanyAcceptedBannerAds,
   getSingleBanner,
-  rejectCompanyBannerAds
+  rejectCompanyBannerAds,
+  getOwnRejectedCompanyRequestAds
 } from "../Controllers/AdBanner.js";
 
-router.post("/add", postAdBanner);
-router.get("/company/find/:id", getSingleBanner); 
-router.get("/company/unaccepted/:companyId", getOwnCompanyRequestAds); //unaccepted ads
-router.get("/unaccepted/all", getAllCompanyRequestAds); //unaccepted ads all for admin
-router.get("/accepted/all", getAllCompanyAcceptedBannerAds); //unaccepted ads all for admin
+router.post("/add",verifyTokenAndAuthorization, postAdBanner);
+router.get("/company/find/:id",verifyTokenAndAuthorization, getSingleBanner); 
+router.get("/company/unaccepted/:companyId",verifyTokenAndAuthorization, getOwnCompanyRequestAds); //unaccepted ads
+router.get("/company/rejected/:companyId",verifyTokenAndAuthorization, getOwnRejectedCompanyRequestAds); //unaccepted ads
+router.get("/unaccepted/all",verifyTokenAndAdmin, getAllCompanyRequestAds); //unaccepted ads all for admin
+router.get("/accepted/all",verifyTokenAndAdmin, getAllCompanyAcceptedBannerAds); //unaccepted ads all for admin
 router.get("/company/accepted/:companyId", getOwnCompanyAcceptedAds);
-router.get("/company/accept/:id", acceptCompanyBannerAds);
-router.get("/company/reject/:id", rejectCompanyBannerAds);
-router.put("/company/edit/:id", editOwnBanner);
-router.delete("/company/delete/:id",deleteOwnBanner)
+router.get("/company/accept/:id",verifyTokenAndAdmin, acceptCompanyBannerAds);
+router.get("/company/reject/:id",verifyTokenAndAdmin, rejectCompanyBannerAds);
+router.put("/company/edit/:id",verifyTokenAndAuthorization, editOwnBanner);
+router.delete("/company/delete/:id",verifyTokenAndAuthorization,deleteOwnBanner)
 router.get("/app", getBannerAds);
 export default router;

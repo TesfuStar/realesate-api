@@ -21,13 +21,19 @@ import {
   getAllAgentCompanyProperty
 } from "../Controllers/Property.js";
 
-router.post("/create", createProperty);
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+} from "../Middleware/authorization.js";
+
+router.post("/create",verifyTokenAndCompanyAdmin, createProperty);
 router.get("/", getAllProperty);
 router.get("/search", getPropertiesByFilter);
 router.get("/find/:id", getSingleProperty);
 router.get("/dashboard/:id", getSinglePropertyDashboard);
-router.delete("/find/:id", deleteProperty);
-router.put("/find/:id", updateProperty);
+router.delete("/find/:id",verifyTokenAndAuthorization, deleteProperty);
+router.put("/find/:id",verifyTokenAndAuthorization, updateProperty);
 router.get('/type',getByPropertyType)
 router.get('/owner/:id',getPropertyByOwner)
 router.get('/company/:companyId',getCompaniesProperty)
@@ -35,6 +41,6 @@ router.get('/company/app/:companyId',getAllAgentCompanyProperty) //for app
 router.get("/featured", getFeaturedProperty);
 router.get("/company/featured/:companyId", getOwnFeaturedProperty);
 router.get("/mostly-viewed", getMostlyViewedProperty);
-router.get("/company/featured/:companyId", getCompaniesFeaturedProperty);
-router.get("/company/un-featured/:companyId", getCompaniesUnadvertisedProperty);
+router.get("/company/featured/:companyId",verifyTokenAndAuthorization, getCompaniesFeaturedProperty);
+router.get("/company/un-featured/:companyId",verifyTokenAndAuthorization, getCompaniesUnadvertisedProperty);
 export default router;

@@ -212,24 +212,6 @@ export const acceptCompanyRequest = async (req, res) => {
 
 export const rejectCompanyRequest = async (req, res) => {
   try {
-    let testAccount = await nodemailer.createTestAccount();
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },
-    });
-    let info = await transporter.sendMail({
-      from: '"Fred Foo 👻"Et Homes', // sender address
-      to: "abdilami91@gmail.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world? this is a sample et homes</b>", // html body
-    });
-    console.log("Message sent: %s", info);
    const request =  await CompanyRequest.findByIdAndUpdate(req.params.id,{isRejected:true},{new:true});
     const requestSenderUser = await User.findByIdAndUpdate(
       req.params.id,

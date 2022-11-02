@@ -154,6 +154,23 @@ export const getCompanyRequestAds = async (req, res) => {
   }
 };
 
+//get own rejected ads
+
+export const getCompanyRejectedRequestAds=async(req,res)=>{
+  try {
+    const companyAdsRequest = await PropertyAd.find({
+      companyId: req.params.companyId,
+      isAccepted: false,
+      isRejected:true,
+      isFeatured:false
+    }).sort({ createdAt: -1 });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: companyAdsRequest });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 //get all add request
 export const getAllCompanyRequestAds = async (req, res) => {
   try {
@@ -183,6 +200,22 @@ export const getAcceptedCompanyRequestAds = async (req, res) => {
   }
 };
 
+
+//get all rejected
+export const getAllRejectedCompanyRequestAds=async(req,res)=>{
+  try {
+    const rejectedAdsRequest = await PropertyAd.find({
+      isAccepted: false,
+      isFeatured: false,
+      isRejected:true
+    }).populate("owner");
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: rejectedAdsRequest });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 //get single Ad request
 export const getSingleAdProperty = async (req, res) => {
   try {

@@ -11,16 +11,28 @@ import {
   getSingleAdProperty,
   deletePropertyAdRequest,
   updatePropertyAdRequest,
-  rejectPropertyAds
+  rejectPropertyAds,
+  getAllRejectedCompanyRequestAds,
+  getCompanyRejectedRequestAds
 } from "../Controllers/PropertyAd.js";
 
-router.post("/create", createPropertyAd);
-router.get("/accept/:id", acceptPropertyAds);
-router.get("/reject/:id", rejectPropertyAds);
-router.get("/company/:companyId", getCompanyRequestAds);
-router.get("/all", getAllCompanyRequestAds);
-router.get("/accepted", getAcceptedCompanyRequestAds);
-router.get("/company/ad/:id", getSingleAdProperty);
-router.put("/company/ad/find/:id", updatePropertyAdRequest);
-router.delete("/company/find/:id", deletePropertyAdRequest);
+
+import {
+  verifyTokenAndAdmin,
+  verifyTokenAndCompanyAdmin,
+  verifyTokenAndAuthorization,
+
+} from "../Middleware/authorization.js";
+
+router.post("/create",verifyTokenAndAuthorization, createPropertyAd);
+router.get("/accept/:id",verifyTokenAndAdmin, acceptPropertyAds);
+router.get("/reject/:id",verifyTokenAndAdmin, rejectPropertyAds);
+router.get("/company/:companyId",  verifyTokenAndAuthorization, getCompanyRequestAds);
+router.get("/company/rejected/:companyId",  verifyTokenAndAuthorization, getCompanyRejectedRequestAds);
+router.get("/all",verifyTokenAndAdmin, getAllCompanyRequestAds);
+router.get("/all/rejected",verifyTokenAndAdmin, getAllRejectedCompanyRequestAds); //get all rejected
+router.get("/accepted",verifyTokenAndAuthorization, getAcceptedCompanyRequestAds);
+router.get("/company/ad/:id",verifyTokenAndAuthorization, getSingleAdProperty);
+router.put("/company/ad/find/:id",verifyTokenAndAuthorization, updatePropertyAdRequest);
+router.delete("/company/find/:id",verifyTokenAndAuthorization, deletePropertyAdRequest);
 export default router;

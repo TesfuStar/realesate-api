@@ -37,6 +37,7 @@ const PropertySchema = new mongoose.Schema(
     isFurnished: { type: Boolean, default: false },
     isRequestedForAd : { type: Boolean, default: false },
     isSoldOut: { type: Boolean, default: false },
+    isHided: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

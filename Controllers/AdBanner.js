@@ -32,6 +32,7 @@ export const getOwnCompanyRequestAds = async (req, res) => {
     const agentCompanyBannerAds = await AdBanner.find({
       AgentCompany: req.params.companyId,
       isAccepted: false,
+      isRejected:false
     })
       .populate("owner")
       .sort({ createdAt: -1 });
@@ -43,6 +44,24 @@ export const getOwnCompanyRequestAds = async (req, res) => {
   }
 };
 
+
+//get own rejected ads
+export const getOwnRejectedCompanyRequestAds=async(req,res)=>{
+  try {
+    const agentCompanyBannerAds = await AdBanner.find({
+      AgentCompany: req.params.companyId,
+      isAccepted: false,
+      isRejected:true
+    })
+      .populate("owner")
+      .sort({ createdAt: -1 });
+    res
+      .status(200)
+      .json({ success: true, message: "success", data: agentCompanyBannerAds });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 //get accepted request ads
 export const getOwnCompanyAcceptedAds = async (req, res) => {
   try {
@@ -208,7 +227,7 @@ export const rejectCompanyBannerAds = async (req, res) => {
       return res.status(404).json({
         message: "bannerAd not found",
       });
-    const getBannerAd = await AdBanner.findByIdAndDelete(req.params.id);
+    const getBannerAd = await AdBanner.findByIdAndUpdate(req.params.id,{isRejected:true},{new:true});
     const rejectAdNotification = new Notification({
       companyId: getBannerAd.AgentCompany,
       title: "Ads Banner request",
