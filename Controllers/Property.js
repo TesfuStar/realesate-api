@@ -129,6 +129,36 @@ export const updateProperty = async (req, res) => {
   }
 };
 
+//update property to hide property
+export const updatePropertyToHide = async (req, res) => {
+  try {
+    const property = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        isHided: true,
+      },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: property });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+//update property to unHide property
+export const updatePropertyToUnHide = async (req, res) => {
+  try {
+    const property = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        isHided: false,
+      },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: property });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 //filtered properties
 
 export const getPropertiesByFilter = async (req, res) => {

@@ -18,7 +18,9 @@ import {
   getCompaniesUnadvertisedProperty,
   getSinglePropertyDashboard,
   getOwnFeaturedProperty,
-  getAllAgentCompanyProperty
+  getAllAgentCompanyProperty,
+  updatePropertyToHide,
+  updatePropertyToUnHide
 } from "../Controllers/Property.js";
 
 import {
@@ -34,6 +36,8 @@ router.get("/find/:id", getSingleProperty);
 router.get("/dashboard/:id", getSinglePropertyDashboard);
 router.delete("/find/:id",verifyTokenAndAuthorization, deleteProperty);
 router.put("/find/:id",verifyTokenAndAuthorization, updateProperty);
+router.get("/find/hide/:id",verifyTokenAndAdmin, updatePropertyToHide); //for admin only to hide property
+router.get("/find/unhide/:id",verifyTokenAndAdmin, updatePropertyToUnHide); //for admin only to unHide
 router.get('/type',getByPropertyType)
 router.get('/owner/:id',getPropertyByOwner)
 router.get('/company/:companyId',getCompaniesProperty)

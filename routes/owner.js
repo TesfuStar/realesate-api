@@ -12,7 +12,7 @@ import {
 } from "../Middleware/authorization.js";
 
 router.post("/create",verifyTokenAndAdmin, createOwner);
-router.get("/",verifyTokenAndAuthorization, getAllOwners);
+router.get("/", getAllOwners);
 router.get("/find/:id",verifyTokenAndAdmin, getSingleCompany);
 router.delete("/find/:id",verifyTokenAndAdmin, deleteSingleOwner);
 router.put("/find/:id",verifyTokenAndAdmin, updateOwner);

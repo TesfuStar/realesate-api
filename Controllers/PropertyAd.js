@@ -9,9 +9,28 @@ import Comment from "../Models/Comment.js";
 export const createPropertyAd = async (req, res) => {
   const newPropertyAd = new PropertyAd(req.body);
   try {
+    const isBeforeInPropertyAd = await PropertyAd.findOne({_id:req.body._id})
+    const notifiedUser = await User.findOne({ isAdmin: true });
+    if(isBeforeInPropertyAd){
+     const updatedPropertyAd =  await PropertyAd.findOneAndUpdate(req.body._id,{isRejected:false},{new:true})
+      const requestNotification = new Notification({
+        userId: notifiedUser._id,
+        title: "property Ad request",
+        message: `You have new Property Ad request`,
+      });
+      const saveRequestNotification = await requestNotification.save();
+      res
+        .status(201)
+        .json({
+          success: true,
+          data: updatedPropertyAd,
+          notification: saveRequestNotification,
+        });
+      return ;
+    }
     const savedPropertyAd = await newPropertyAd.save();
     const isBeforeExisted = await Property.findOne({_id:savedPropertyAd._id})
-    console.log(isBeforeExisted)
+    console.log("isBeforeExisted")
     if(isBeforeExisted){
         await Property.findOneAndUpdate(
         {_id:savedPropertyAd._id},
@@ -21,7 +40,6 @@ export const createPropertyAd = async (req, res) => {
         { new: true }
       );
     }
-    const notifiedUser = await User.findOne({ isAdmin: true });
     const requestNotification = new Notification({
       userId: notifiedUser._id,
       title: "property Ad request",
@@ -123,7 +141,7 @@ export const rejectPropertyAds = async (req, res) => {
     if(isExisted){
       await Property.findByIdAndUpdate(req.params.id,{isRequestedForAd:false},{new:true})
     }
-    await PropertyAd.findByIdAndDelete(req.params.id);
+    await PropertyAd.findByIdAndUpdate(req.params.id,{isRejected:true},{new:true});
     const propertyAdNotification = new Notification({
       companyId: companyAd.companyId,
       title:"Property Ad request",
@@ -145,6 +163,7 @@ export const getCompanyRequestAds = async (req, res) => {
     const companyAdsRequest = await PropertyAd.find({
       companyId: req.params.companyId,
       isAccepted: false,
+      isRejected:false
     }).sort({ createdAt: -1 });
     res
       .status(200)
@@ -174,7 +193,7 @@ export const getCompanyRejectedRequestAds=async(req,res)=>{
 //get all add request
 export const getAllCompanyRequestAds = async (req, res) => {
   try {
-    const allAdsRequest = await PropertyAd.find({ isAccepted: false }).sort({
+    const allAdsRequest = await PropertyAd.find({ isAccepted: false,isRejected:false }).sort({
       createdAt: -1,
     });
     res
@@ -184,6 +203,7 @@ export const getAllCompanyRequestAds = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 //get accepted ad request
 export const getAcceptedCompanyRequestAds = async (req, res) => {
