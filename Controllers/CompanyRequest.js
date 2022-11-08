@@ -90,7 +90,7 @@ export const userLandingProfile = async (req, res) => {
 export const getAllCompanyRequest = async (req, res) => {
   try {
     const allCompanyRequest = await CompanyRequest.find({
-      isApproved: false,
+      isApproved: false,isRejected:false
     }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: allCompanyRequest });
   } catch (error) {
