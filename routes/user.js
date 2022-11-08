@@ -18,7 +18,7 @@ import {
   verifyTokenAndAuthorization,
 } from "../Middleware/authorization.js";
 
-router.put("/find/:id",verifyTokenAndAuthorization, updateUser);
+router.put("/find/:id", updateUser);
 router.get("/find/:id",verifyTokenAndAdmin, getSingleUser);
 router.post("/company/:id", createCompany);
 router.get("/profile/:companyId", userProfile);
