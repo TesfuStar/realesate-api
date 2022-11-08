@@ -10,8 +10,8 @@ import {
     verifyTokenAndCompanyAdmin,
     verifyTokenAndAuthorization,
   } from "../Middleware/authorization.js";
-router.post("/add",verifyTokenAndAuthorization, commentToAgent);
-router.put("/edit/:id",verifyTokenAndAuthorization, editOwnComment);
-router.get("/agent/:id",verifyTokenAndAuthorization, getAgentComments);
-router.delete("/delete/:id",verifyTokenAndAuthorization, deleteOwnComment);
+router.post("/add", commentToAgent);
+router.put("/edit/:id", editOwnComment);
+router.get("/agent/:id", getAgentComments);
+router.delete("/delete/:id", deleteOwnComment);
 export default router;
