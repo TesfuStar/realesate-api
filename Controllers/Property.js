@@ -174,7 +174,7 @@ export const getPropertiesByFilter = async (req, res) => {
     owner,
   } = req.query;
   try {
-    const property = await Property.find({isSoldOut:false,isRented:false,isFeatured:false,
+    const property = await Property.find({isSoldOut:false,isRented:false,
       price: { $gte: minprice | 0, $lte: maxprice || 20000000 },
       "details.bedroom": { $gte: bedroom | 0 },
       "details.bathroom": { $gte: bathroom | 0 },
