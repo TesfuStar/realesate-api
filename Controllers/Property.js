@@ -61,11 +61,11 @@ export const getSingleProperty = async (req, res) => {
         },
       },
     });
-
+    const agentCompany = await AgentCompany.findOne({companyId:singleProperty.companyId})
     const savedProperty = await singleProperty.save();
     res
       .status(200)
-      .json({ success: true, data: savedProperty, related: relatedProperty });
+      .json({ success: true, data: savedProperty, related: relatedProperty,agentCompany:agentCompany.name });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
