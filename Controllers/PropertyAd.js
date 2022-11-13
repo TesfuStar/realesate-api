@@ -11,6 +11,17 @@ export const createPropertyAd = async (req, res) => {
   try {
     const isBeforeInPropertyAd = await PropertyAd.findOne({_id:req.body._id})
     const notifiedUser = await User.findOne({ isAdmin: true });
+    const isBeforeExisted = await Property.findOne({_id:req.body._id})
+
+    if(isBeforeExisted){
+        await Property.findOneAndUpdate(
+        {_id:req.body._id},
+        {
+          isRequestedForAd:true
+        },
+        { new: true }
+      );
+    }
     if(isBeforeInPropertyAd){
      const updatedPropertyAd =  await PropertyAd.findOneAndUpdate(req.body._id,{isRejected:false},{new:true})
       const requestNotification = new Notification({
@@ -29,17 +40,7 @@ export const createPropertyAd = async (req, res) => {
       return ;
     }
     const savedPropertyAd = await newPropertyAd.save();
-    const isBeforeExisted = await Property.findOne({_id:savedPropertyAd._id})
-    console.log("isBeforeExisted")
-    if(isBeforeExisted){
-        await Property.findOneAndUpdate(
-        {_id:savedPropertyAd._id},
-        {
-          isRequestedForAd:true
-        },
-        { new: true }
-      );
-    }
+ 
     const requestNotification = new Notification({
       userId: notifiedUser._id,
       title: "property Ad request",
