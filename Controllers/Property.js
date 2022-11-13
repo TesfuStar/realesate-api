@@ -22,7 +22,7 @@ export const getAllProperty = async (req, res) => {
     populate: "agents",
     sort: { createdAt: -1 },
 
-    limit: 2,
+    limit: 10,
     collation: {
       locale: "en",
     },
